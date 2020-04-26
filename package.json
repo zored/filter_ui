@@ -1,0 +1,29 @@
+{
+  "name": "filter_ui",
+  "version": "1.0.0",
+  "description": "UI to filter anything",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "start": "yarn run build && electron ./dist/main.js",
+    "package_win64": "yarn run build && electron-packager . filter_ui --platform=win32 --arch=x64 --out=build"
+  },
+  "main": "dist/main.js",
+  "repository": "https://github.com/zored/filter_ui",
+  "keywords": [
+    "filter",
+    "ui",
+    "electron",
+    "typescript"
+  ],
+  "author": "zored",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "12",
+    "electron": "^8.2.3",
+    "electron-packager": "^14.2.1",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3"
+  }
+}

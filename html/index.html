@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Filter UI</title>
+    <meta charset="UTF-8">
+    <style>
+        img {
+            max-height: 100%;
+            max-width: 100%;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            padding: 50px;
+            background-color: #000;
+            color: #fff;
+        }
+        body.like {
+            background-color: #0d470d;
+        }
+        body.dislike {
+            background-color: #470d19;
+        }
+        #item, #done {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="item">
+    Files loaded.<br/>
+    Press <b>J</b> to like and <b>F</b> do dislike item.
+</div>
+<div id="done">
+    All files filtered.
+</div>
+
+<script>
+    require("../dist/renderer.js")
+</script>
+</body>
+</html>
