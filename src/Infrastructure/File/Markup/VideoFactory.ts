@@ -4,6 +4,7 @@ import {ElementFactory} from "./ElementFactory"
 export class VideoFactory implements ElementFactory {
     createElement(file: MyFile): HTMLElement {
         const video = document.createElement('video')
+        video.autoplay = true
         video.appendChild(this.createSource(file.path))
         return video
     }

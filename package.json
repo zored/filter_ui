@@ -6,10 +6,20 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "yarn run build && electron ./dist/Infrastructure/main_app.js",
-    "package_win64": "yarn run build && electron-packager . filter_ui --platform=win32 --arch=x64 --overwrite --out=build"
+    "start": "yarn run build && electron ./js/Infrastructure/main_app.js",
+    "package_win64": "yarn run build && electron-packager . filter_ui --platform=win32 --arch=x64 --overwrite --out=build",
+    "postinstall": "electron-builder install-app-deps",
+
+    "pack": "yarn run build && electron-builder --dir",
+    "dist": "yarn run build && electron-builder"
   },
-  "main": "dist/main.js",
+  "build": {
+    "appId": "gl.ro.filter_ui",
+    "mac": {
+      "category": "xxx"
+    }
+  },
+  "main": "./js/Infrastructure/main_app.js",
   "repository": "https://github.com/zored/filter_ui",
   "keywords": [
     "filter",
@@ -22,6 +32,7 @@
   "devDependencies": {
     "@types/node": "12",
     "electron": "^8.2.3",
+    "electron-builder": "^22.6.0",
     "electron-packager": "^14.2.1",
     "jimp": "^0.10.3",
     "tslint": "^6.1.1",

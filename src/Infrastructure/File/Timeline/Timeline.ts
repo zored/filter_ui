@@ -24,12 +24,12 @@ export class Timeline {
     }
 
     getPrevious(): PreviousItem | null {
-        if (this.current !== null) {
-            this.nextQueue.push(this.current)
-        }
         const previous = this.previousQueue.pop() || null
         if (previous === null) {
             return null
+        }
+        if (this.current !== null) {
+            this.nextQueue.push(this.current)
         }
         this.current = previous.item
         return previous
