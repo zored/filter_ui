@@ -6,7 +6,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "yarn run build && electron ./dist/main.js",
+    "start": "yarn run build && electron ./dist/Infrastructure/main_app.js",
     "package_win64": "yarn run build && electron-packager . filter_ui --platform=win32 --arch=x64 --overwrite --out=build"
   },
   "main": "dist/main.js",

@@ -6,7 +6,8 @@
         120
       ]
     },
-    "no-console": false
+    "no-console": false,
+    "trailing-comma": false
   },
   "jsRules": {
     "max-line-length": {
