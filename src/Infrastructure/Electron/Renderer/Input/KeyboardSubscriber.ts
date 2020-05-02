@@ -14,7 +14,7 @@ export class KeyboardSubscriber {
             O: () => subject.load(),
 
             P: () => subject.rotate(+1),
-            Q: () => subject.rotate(+1),
+            Q: () => subject.rotate(-1),
 
             D: () => options.addVideoSpeed(+1),
             K: () => options.addVideoSpeed(-1),

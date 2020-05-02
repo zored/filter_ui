@@ -4,8 +4,12 @@ import {WindowFactory} from "./WindowFactory"
 
 export class DesktopApp {
     private window: BrowserWindow = null
+    private readonly handler = new MainHandler()
 
-    constructor(private app: App, private windowFactory: WindowFactory) {
+    constructor(
+        private app: App,
+        private windowFactory: WindowFactory
+    ) {
     }
 
     static start(): void {
@@ -21,7 +25,13 @@ export class DesktopApp {
         this.app.on("ready", () => this.createWindow())
         this.app.on("activate", () => this.createWindow())
         this.app.on("window-all-closed", () => this.closeNonMacOs())
-        new MainHandler().subscribe()
+        this.app.on("before-quit", event => this.quitAfterHandler(event))
+        this.handler.subscribe()
+    }
+
+    private quitAfterHandler(event: Electron.Event): void {
+        event.returnValue = false
+        this.handler.done().finally(() => this.app.exit(0))
     }
 
     private async createWindow(): Promise<void> {

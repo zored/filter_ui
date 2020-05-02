@@ -1,5 +1,6 @@
 import {ipcMain} from 'electron'
 import {FileLiker} from "../../../File/Like/FileLiker"
+import {Timeout} from "../../../Utils/Timeout"
 import {Channel} from "../../Message/Channel"
 import {IMainHandler} from "../../Message/IMainHandler"
 import {IMessage} from "../../Message/IMessage"
@@ -12,14 +13,23 @@ export class MainHandler implements IMainHandler {
     handle(message: IMessage): void {
         switch (message.channel) {
             case Channel.like:
-                this.inProgress++
+                this.addProgress()
                 this.fileLiker
                     .like(message as LikeMessage)
                     .then(r => r !== null && console.log(r))
-                    .finally(() => {
-                        this.inProgress--
-                    })
+                    .finally(() => this.addProgress(-1))
                 break
+        }
+    }
+
+    addProgress(delta: number = +1) {
+        this.inProgress += delta
+        console.log('in progress', this.inProgress)
+    }
+
+    async done(): Promise<void> {
+        while (this.inProgress > 0) {
+            await Timeout.promise(200)
         }
     }
 

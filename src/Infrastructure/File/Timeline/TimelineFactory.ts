@@ -1,8 +1,8 @@
 import {MyFile} from "../MyFile"
 import {DefaultPriorityRetriever} from "../Priority/DefaultPriorityRetriever"
 import {PriorityRetriever} from "../Priority/PriorityRetriever"
-import {TimelineItem} from "./TimelineItem"
 import {Timeline} from "./Timeline"
+import {TimelineItem} from "./TimelineItem"
 
 export class TimelineFactory {
     private readonly priorityRetriever: PriorityRetriever = new DefaultPriorityRetriever()
@@ -14,7 +14,7 @@ export class TimelineFactory {
     private createNextQueue(files: MyFile[]) {
         return files
             .map(file => this.createNextItem(file))
-            .sort((left, right) => right.priority - left.priority)
+            .sort((left, right) => left.priority - right.priority)
     }
 
     private createNextItem(file: MyFile): TimelineItem {

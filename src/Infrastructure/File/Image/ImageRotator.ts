@@ -8,7 +8,7 @@ export class ImageRotator {
     async rotate90(path: string, count: number): Promise<void> {
         const image = await Jimp.read(path)
         const tmpPath = path + '.rotate'
-        await image.rotate(count * 90).writeAsync(tmpPath)
+        await image.rotate(-count * 90).writeAsync(tmpPath)
         this.fs.moveSync(tmpPath, path, true)
     }
 }
