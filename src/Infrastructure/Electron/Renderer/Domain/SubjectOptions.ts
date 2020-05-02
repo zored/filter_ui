@@ -1,5 +1,5 @@
-import {ISubjectOptions} from "../../Domain/ISubjectOptions"
-import {Output} from "../Electron/Renderer/Output/Output"
+import {ISubjectOptions} from "../../../../Domain/ISubjectOptions"
+import {Output} from "../Output/Output"
 
 export class SubjectOptions implements ISubjectOptions {
     constructor(private output: Output) {

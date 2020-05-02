@@ -2,11 +2,11 @@
  * The things we can do with subject (image, video, etc.)
  */
 export interface ISubjectActions {
-    like(): void
+    like(): Promise<void>
 
-    dislike(): void
+    dislike(): Promise<void>
 
-    undo(): void
+    undo(): Promise<void>
 
     refresh(): void
 
@@ -16,4 +16,6 @@ export interface ISubjectActions {
     load(): Promise<void>;
 
     done(): Promise<void>
+
+    rotate(num90: number): Promise<void>
 }

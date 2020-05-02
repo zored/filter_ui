@@ -16,6 +16,13 @@ body {
     background-color: #000;
     color: #fff;
 }
+#info {
+    position: fixed;
+    bottom: 0;
+    left:0;
+    background-color: #000;
+    padding: 4px;
+}
 body.like {
     background-color: #0d470d;
 }

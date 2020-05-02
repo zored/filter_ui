@@ -1,4 +1,5 @@
 import {App, app, BrowserWindow} from "electron"
+import {MainHandler} from "./Message/MainHandler"
 import {WindowFactory} from "./WindowFactory"
 
 export class DesktopApp {
@@ -8,7 +9,7 @@ export class DesktopApp {
     }
 
     static start(): void {
-        new DesktopApp(app, new WindowFactory(process.env.DEBUG === 'Y')).run()
+        new DesktopApp(app, new WindowFactory(true)).run()
     }
 
     private static isMacOs(): boolean {
@@ -20,6 +21,7 @@ export class DesktopApp {
         this.app.on("ready", () => this.createWindow())
         this.app.on("activate", () => this.createWindow())
         this.app.on("window-all-closed", () => this.closeNonMacOs())
+        new MainHandler().subscribe()
     }
 
     private async createWindow(): Promise<void> {

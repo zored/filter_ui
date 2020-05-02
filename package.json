@@ -9,11 +9,11 @@
     "start": "yarn run build && electron ./js/Infrastructure/main_app.js",
     "package_win64": "yarn run build && electron-packager . filter_ui --platform=win32 --arch=x64 --overwrite --out=build",
     "postinstall": "electron-builder install-app-deps",
-
     "pack": "yarn run build && electron-builder --dir",
     "dist": "yarn run build && electron-builder"
   },
   "build": {
+    "asar": false,
     "appId": "gl.ro.filter_ui",
     "mac": {
       "category": "xxx"
@@ -31,11 +31,14 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "12",
-    "electron": "^8.2.3",
+    "electron": "8.2.3",
     "electron-builder": "^22.6.0",
     "electron-packager": "^14.2.1",
-    "jimp": "^0.10.3",
     "tslint": "^6.1.1",
     "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@types/jimp": "^0.2.28",
+    "jimp": "^0.10.3"
   }
 }

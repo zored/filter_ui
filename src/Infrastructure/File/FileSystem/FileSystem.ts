@@ -7,7 +7,7 @@ const removeTimeout = 500
 export type FilePath = string;
 
 export class FileSystem {
-    moveToNeighbourDirectory(file: FilePath, directoryName: string): [FilePath, Promise<void>] {
+    moveToNeighbourDirectory(file: FilePath, directoryName: string): [FilePath, Promise<[FilePath, FilePath]>] {
         const directoryPath = path.join(path.dirname(file), directoryName)
         const newPath = path.join(directoryPath, path.basename(file))
 
@@ -15,38 +15,49 @@ export class FileSystem {
         return [newPath, this.delayMove(file, newPath)]
     }
 
-    moveSync(source: string, destination: FilePath) {
+    moveSync(source: string, destination: FilePath, replace: boolean = false) {
+        const destinationExists = fs.existsSync(destination)
+        if (destinationExists) {
+            if (replace) {
+                fs.unlinkSync(destination)
+
+            } else {
+                throw new Error(`Can't replace ${destination} with ${source}.`)
+            }
+        }
         fs.copyFileSync(source, destination)
         fs.unlinkSync(source)
     }
 
-    private async delayMove(src: string, dist: string): Promise<void> {
+    private async delayMove(src: string, dist: string): Promise<[FilePath, FilePath]> {
         await fs.promises.copyFile(src, dist)
         await this.delayRemove(src)
+        return [src, dist]
     }
 
-    private async delayRemove(file: string, retry = 0) {
+    private async delayRemove(file: string, retry = 0): Promise<void> {
         await Timeout.promise(removeTimeout)
-        return this.remove(file, retry)
+        await this.remove(file, retry)
     }
 
-    private remove(file: string, retry = 0) {
-        fs.unlink(file, err => this.onUnlink(err, file, retry))
+    private async remove(file: string, retry = 0): Promise<void> {
+        try {
+            await fs.promises.unlink(file)
+            return
+        } catch (err) {
+            if (err === null) {
+                return
+            }
+            if (err.code != "EBUSY" || retry > 5) {
+                throw err
+            }
+            await this.delayRemove(file, retry + 1)
+        }
     }
 
     private createDirectory(directory: string) {
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory)
         }
-    }
-
-    private onUnlink(err: NodeJS.ErrnoException, file: string, retry: number): void {
-        if (err === null) {
-            return
-        }
-        if (err.code != "EBUSY" || retry > 5) {
-            throw err
-        }
-        this.delayRemove(file, retry + 1)
     }
 }

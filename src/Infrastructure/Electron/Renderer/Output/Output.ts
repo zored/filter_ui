@@ -4,6 +4,7 @@ export class Output {
     private readonly body = document.body
     private readonly done = document.getElementById("done")
     private readonly content = document.getElementById("item")
+    private readonly info = document.getElementById("info")
 
     private videoSpeed = 1.2
     private videoSpeedDelta = 0.15
@@ -32,6 +33,10 @@ export class Output {
         }
         this.content.appendChild(element)
         this.updateVideoSpeed()
+    }
+
+    setInfo(text: string): void {
+        this.info.innerText = text
     }
 
     private setVisible(element: HTMLElement, visible: boolean): void {

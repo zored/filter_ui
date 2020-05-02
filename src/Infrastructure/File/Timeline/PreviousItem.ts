@@ -1,8 +1,8 @@
 import {FilePath} from "../FileSystem/FileSystem"
-import {NextItem} from "./NextItem"
+import {TimelineItem} from "./TimelineItem"
 
 export class PreviousItem {
-    constructor(public item: NextItem, public newPath: string) {
+    constructor(public item: TimelineItem, public newPath: string) {
     }
 
     get prevPath(): FilePath {

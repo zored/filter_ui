@@ -4,7 +4,7 @@ import {ElementFactory} from "./ElementFactory"
 export class ImageFactory implements ElementFactory {
     createElement(file: MyFile): HTMLElement {
         const img = document.createElement('img')
-        img.src = file.path
+        img.src = `${file.path}#${new Date().getTime()}`
         return img
     }
 

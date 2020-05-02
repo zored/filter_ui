@@ -1,12 +1,12 @@
 import {MyFile} from "../MyFile"
-import {NextItem} from "./NextItem"
+import {TimelineItem} from "./TimelineItem"
 import {PreviousItem} from "./PreviousItem"
 
 export class Timeline {
-    private current: NextItem | null = null
+    private current: TimelineItem | null = null
 
     constructor(
-        private readonly nextQueue: NextItem[],
+        private readonly nextQueue: TimelineItem[],
         private readonly previousQueue: PreviousItem[] = []
     ) {
         this.updateCurrent()
@@ -19,8 +19,8 @@ export class Timeline {
         this.updateCurrent()
     }
 
-    getCurrentFile(): MyFile | null {
-        return this.current?.file || null
+    getCurrent(): TimelineItem | null {
+        return this.current || null
     }
 
     getPrevious(): PreviousItem | null {
