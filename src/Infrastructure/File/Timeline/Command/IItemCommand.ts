@@ -1,3 +1,5 @@
-export interface IItemCommand {
+import {CommandId} from "./CommandId"
 
+export interface IItemCommand {
+    id: CommandId
 }

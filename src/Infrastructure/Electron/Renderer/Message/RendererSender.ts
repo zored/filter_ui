@@ -3,7 +3,7 @@ import {IMessage} from "../../Message/IMessage"
 import {IRendererSender} from "../../Message/IRendererSender"
 
 export class RendererSender implements IRendererSender {
-    send(message: IMessage): void {
+    sendToMain(message: IMessage): void {
         ipcRenderer.send(message.channel, message)
     }
 }

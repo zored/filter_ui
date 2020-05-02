@@ -1,32 +1,27 @@
 import {ISubjectActions} from "../../../../Domain/ISubjectActions"
-import {Like} from "../../Message/Message/Like"
-import {DirectoryPrompt} from "../Input/DirectoryPrompt"
-import {RendererSender} from "../Message/RendererSender"
-import {Output} from "../Output/Output"
-import {FilePath, FileSystem} from "../../../File/FileSystem/FileSystem"
-import {ImageRotator} from "../../../File/Image/ImageRotator"
+import {FileSystem} from "../../../File/FileSystem/FileSystem"
 import {ElementFactory} from "../../../File/Markup/ElementFactory"
 import {FindSuitableFactory} from "../../../File/Markup/FindSuitableFactory"
 import {TitledFactory} from "../../../File/Markup/TitledFactory"
 import {MyFile} from "../../../File/MyFile"
 import {DirectoryFileRetriever} from "../../../File/Retriever/DirectoryFileRetriever"
-import {Rotate90Command} from "../../../File/Timeline/Command/Rotate90Command"
+import {RotateCommand} from "../../../File/Timeline/Command/RotateCommand"
 import {Timeline} from "../../../File/Timeline/Timeline"
 import {TimelineFactory} from "../../../File/Timeline/TimelineFactory"
-import {TimelineItem} from "../../../File/Timeline/TimelineItem"
-import {Timeout} from "../../../Utils/Timeout"
+import {LikeMessage} from "../../Message/Message/LikeMessage"
+import {DirectoryPrompt} from "../Input/DirectoryPrompt"
+import {RendererSender} from "../Message/RendererSender"
+import {Output} from "../Output/Output"
 
 type Async = Promise<void>
 
 export class SubjectActions implements ISubjectActions {
     private timeline: Timeline
-    private inProgress = 0
     private readonly timelineFactory = new TimelineFactory()
     private readonly elementFactory: ElementFactory = new TitledFactory(new FindSuitableFactory())
     private readonly fs = new FileSystem()
     private readonly directoryPrompt = new DirectoryPrompt()
     private readonly fileRetriever = new DirectoryFileRetriever()
-    private readonly imageRotator = new ImageRotator(this.fs)
     private readonly sender = new RendererSender()
 
     constructor(private readonly output: Output) {
@@ -69,10 +64,6 @@ export class SubjectActions implements ISubjectActions {
     }
 
     async done(): Async {
-        while (this.inProgress > 0) {
-            await Timeout.promise(1000)
-            this.logProgress('wait done')
-        }
     }
 
     async rotate(num90: number): Async {
@@ -80,19 +71,9 @@ export class SubjectActions implements ISubjectActions {
         if (!item) {
             return
         }
-        item.commands.push(new Rotate90Command(num90))
+        item.commands.push(new RotateCommand(num90))
     }
 
-    private async withProgress<T>(promise: Promise<T>): Async {
-        this.inProgress++
-        this.logProgress(' actions in progress (+).')
-        try {
-            await promise
-        } finally {
-            this.inProgress--
-            this.logProgress(' actions in progress (-).')
-        }
-    }
 
     private getFile(): MyFile {
         return this.timeline.getCurrent()?.file
@@ -107,32 +88,16 @@ export class SubjectActions implements ISubjectActions {
     }
 
     private async setLike(like: boolean): Async {
-        this.sender.send(new Like(like))
         const item = this.timeline.getCurrent()
         if (!item) {
             return
         }
         this.output.like(like)
         const directoryName = like ? 'like' : 'dislike'
-        const [newPath, moveDone] = this.fs.moveToNeighbourDirectory(item.file.path, directoryName)
-        this.withProgress(this.onMoveDone(moveDone, item)).then(() => {})
+        const newPath = this.fs.getMoveToNeighbourDirectoryPath(item.file.path, directoryName)
+        const message = new LikeMessage(like, item.file.path, newPath, item.commands)
+        this.sender.sendToMain(message)
         this.timeline.toHistory(newPath)
         this.refresh()
-    }
-
-    private async onMoveDone(moveDone: Promise<[FilePath, FilePath]>, item: TimelineItem): Async {
-        const [,newPath] = await moveDone
-        for (const command of item.commands) {
-            if (!(command instanceof Rotate90Command)) {
-                continue
-            }
-            await this.withProgress(
-                this.imageRotator.rotate90(newPath, command.count90)
-            )
-        }
-    }
-
-    private logProgress(message: string) {
-        this.output.setInfo(`${this.inProgress} ${message}`)
     }
 }

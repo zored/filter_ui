@@ -7,12 +7,17 @@ const removeTimeout = 500
 export type FilePath = string;
 
 export class FileSystem {
-    moveToNeighbourDirectory(file: FilePath, directoryName: string): [FilePath, Promise<[FilePath, FilePath]>] {
-        const directoryPath = path.join(path.dirname(file), directoryName)
-        const newPath = path.join(directoryPath, path.basename(file))
+    getMoveToNeighbourDirectoryPath(file: FilePath, directoryName: string): FilePath {
+        return path.join(
+            path.dirname(file),
+            directoryName,
+            path.basename(file),
+        )
+    }
 
-        this.createDirectory(directoryPath)
-        return [newPath, this.delayMove(file, newPath)]
+    async movePromise(source: FilePath, newPath: string): Promise<void> {
+        this.createDirectorySync(path.dirname(newPath))
+        await this.delayMove(source, newPath)
     }
 
     moveSync(source: string, destination: FilePath, replace: boolean = false) {
@@ -29,10 +34,9 @@ export class FileSystem {
         fs.unlinkSync(source)
     }
 
-    private async delayMove(src: string, dist: string): Promise<[FilePath, FilePath]> {
+    private async delayMove(src: string, dist: string): Promise<void> {
         await fs.promises.copyFile(src, dist)
         await this.delayRemove(src)
-        return [src, dist]
     }
 
     private async delayRemove(file: string, retry = 0): Promise<void> {
@@ -55,7 +59,7 @@ export class FileSystem {
         }
     }
 
-    private createDirectory(directory: string) {
+    private createDirectorySync(directory: string): void {
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory)
         }
