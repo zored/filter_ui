@@ -1,9 +1,9 @@
 import {ipcRenderer} from 'electron'
-import {IMessage} from "../../Message/IMessage"
+import {IIntoMainMessage} from "../../Message/IIntoMainMessage"
 import {IRendererSender} from "../../Message/IRendererSender"
 
 export class RendererSender implements IRendererSender {
-    sendToMain(message: IMessage): void {
+    sendToMain(message: IIntoMainMessage): void {
         ipcRenderer.send(message.channel, message)
     }
 }

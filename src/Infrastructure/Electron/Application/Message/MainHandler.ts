@@ -1,51 +1,58 @@
 import {ipcMain} from 'electron'
+import {FileSystem} from "../../../File/FileSystem/FileSystem"
 import {FileLiker} from "../../../File/Like/FileLiker"
-import {Timeout} from "../../../Utils/Timeout"
-import {Channel} from "../../Message/Channel"
+import {Progress} from "../../../Utils/Progress"
+import {Channels} from "../../Message/Channel/Channels"
+import {IntoMainChannel} from "../../Message/Channel/IntoMainChannel"
+import {IIntoMainMessage} from "../../Message/IIntoMainMessage"
 import {IMainHandler} from "../../Message/IMainHandler"
-import {IMessage} from "../../Message/IMessage"
+import {IMainSender} from "../../Message/IMainSender"
 import {LikeMessage} from "../../Message/Message/LikeMessage"
+import {UndoDoneMessage} from "../../Message/Message/UndoDoneMessage"
+import {UndoMessage} from "../../Message/Message/UndoMessage"
 
 export class MainHandler implements IMainHandler {
-    private fileLiker = new FileLiker()
-    private inProgress = 0
-
-    handle(message: IMessage): void {
-        switch (message.channel) {
-            case Channel.like:
-                this.addProgress()
-                this.fileLiker
-                    .like(message as LikeMessage)
-                    .then(r => r !== null && console.log(r))
-                    .finally(() => this.addProgress(-1))
-                break
-        }
+    private readonly fileLiker = new FileLiker()
+    private readonly progress = new Progress("main subject actions")
+    private readonly fs = new FileSystem()
+    private handlers: Record<IntoMainChannel, (message: IIntoMainMessage) => any> = {
+        [IntoMainChannel.like]: this.like,
+        [IntoMainChannel.undo]: this.undo,
     }
 
-    addProgress(delta: number = +1) {
-        this.inProgress += delta
-        console.log('in progress', this.inProgress)
+    constructor(private readonly sender: IMainSender) {
+    }
+
+    handle(message: IIntoMainMessage): void {
+        const handler = this.handlers[message.channel]
+        if (!handler) {
+            throw new Error(`No handler for channel ${message.channel}`)
+        }
+        handler.apply(this, [message])
     }
 
     async done(): Promise<void> {
-        while (this.inProgress > 0) {
-            await Timeout.promise(200)
-        }
+        await this.progress.done()
     }
 
     subscribe(): void {
-        const channels: Channel[] = Object.entries(Channel).map(([, channels]) => channels)
-        this.validateChannels(channels)
-        channels.forEach(channel => ipcMain.on(channel, (_, message) => this.handle(message)))
+        Channels.subscribe(
+            IntoMainChannel,
+            ipcMain,
+            message => this.handle(message as IIntoMainMessage)
+        )
     }
 
-    private validateChannels(channels: Channel[]): void {
-        channels.reduce((acc, item) => {
-            if (acc.indexOf(item) > -1) {
-                throw new Error('Multiple channels with same name are registered.')
-            }
-            acc.push(item)
-            return acc
-        }, [] as typeof channels)
+    private undo(message: UndoMessage): void {
+        this.progress.wrapFunc(
+            () => this.fs.moveSync(message.likedPath, message.originalPath)
+        )
+    }
+
+    private async like(likeMessage: LikeMessage): Promise<void> {
+        await this.progress.wrapPromise(
+            this.fileLiker.like(likeMessage)
+        )
+        this.sender.sendToRenderer(new UndoDoneMessage())
     }
 }

@@ -7,13 +7,6 @@ const removeTimeout = 500
 export type FilePath = string;
 
 export class FileSystem {
-    getMoveToNeighbourDirectoryPath(file: FilePath, directoryName: string): FilePath {
-        return path.join(
-            path.dirname(file),
-            directoryName,
-            path.basename(file),
-        )
-    }
 
     async movePromise(source: FilePath, newPath: string): Promise<void> {
         this.createDirectorySync(path.dirname(newPath))

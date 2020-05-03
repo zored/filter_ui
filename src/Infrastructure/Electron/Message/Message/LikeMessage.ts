@@ -1,10 +1,10 @@
 import {FilePath} from "../../../File/FileSystem/FileSystem"
 import {IItemCommand} from "../../../File/Timeline/Command/IItemCommand"
-import {Channel} from "../Channel"
-import {IMessage} from "../IMessage"
+import {IntoMainChannel} from "../Channel/IntoMainChannel"
+import {IIntoMainMessage} from "../IIntoMainMessage"
 
-export class LikeMessage implements IMessage {
-    channel = Channel.like
+export class LikeMessage implements IIntoMainMessage {
+    channel = IntoMainChannel.like
 
     constructor(
         public like: boolean,

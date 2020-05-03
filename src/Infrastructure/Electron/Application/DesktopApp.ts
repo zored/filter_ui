@@ -1,10 +1,12 @@
 import {App, app, BrowserWindow} from "electron"
 import {MainHandler} from "./Message/MainHandler"
+import {MainSender} from "./Message/MainSender"
 import {WindowFactory} from "./WindowFactory"
 
 export class DesktopApp {
     private window: BrowserWindow = null
-    private readonly handler = new MainHandler()
+    private readonly sender = new MainSender(this.window)
+    private readonly handler = new MainHandler(this.sender)
 
     constructor(
         private app: App,
@@ -21,11 +23,12 @@ export class DesktopApp {
     }
 
     run(): void {
-        this.app.allowRendererProcessReuse = true
-        this.app.on("ready", () => this.createWindow())
-        this.app.on("activate", () => this.createWindow())
-        this.app.on("window-all-closed", () => this.closeNonMacOs())
-        this.app.on("before-quit", event => this.quitAfterHandler(event))
+        const {app} = this
+        app.allowRendererProcessReuse = true
+        app.on("ready", () => this.createWindow())
+        app.on("activate", () => this.createWindow())
+        app.on("window-all-closed", () => this.closeNonMacOs())
+        app.on("before-quit", event => this.quitAfterHandler(event))
         this.handler.subscribe()
     }
 
@@ -39,6 +42,7 @@ export class DesktopApp {
             return
         }
         this.window = await this.windowFactory.create()
+        this.sender.window = this.window
         this.window.on("closed", (): void => this.window = null)
     }
 

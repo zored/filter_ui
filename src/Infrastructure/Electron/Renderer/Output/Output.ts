@@ -1,11 +1,13 @@
+import {AddRotate, MyElement} from "../../../File/Markup/MyElement"
+
 type BodyClass = 'like' | 'dislike' | ''
 
 export class Output {
+    doRotate?: AddRotate
     private readonly body = document.body
     private readonly done = document.getElementById("done")
     private readonly content = document.getElementById("item")
     private readonly info = document.getElementById("info")
-
     private videoSpeed = 1.2
     private videoSpeedDelta = 0.15
 
@@ -26,17 +28,26 @@ export class Output {
         this.videoSpeed += this.videoSpeedDelta * multiplier
     }
 
-    setContent(element: HTMLElement = null) {
+    setContent(element?: MyElement) {
         this.content.innerHTML = ''
         if (element === null) {
             return
         }
-        this.content.appendChild(element)
+        this.content.appendChild(element.html)
+        this.doRotate = element.rotate
         this.updateVideoSpeed()
     }
 
     setInfo(text: string): void {
         this.info.innerText = text
+    }
+
+    rotateElement(num90: number): boolean {
+        if (!this.doRotate) {
+            return false
+        }
+        this.doRotate(num90 * 90)
+        return true
     }
 
     private setVisible(element: HTMLElement, visible: boolean): void {

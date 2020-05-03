@@ -1,6 +1,5 @@
-import {MyFile} from "../MyFile"
-import {TimelineItem} from "./TimelineItem"
 import {PreviousItem} from "./PreviousItem"
+import {TimelineItem} from "./TimelineItem"
 
 export class Timeline {
     private current: TimelineItem | null = null
@@ -33,6 +32,14 @@ export class Timeline {
         }
         this.current = previous.item
         return previous
+    }
+
+    revertPrevious(previous: PreviousItem): void {
+        this.previousQueue.push(previous)
+        const current = this.nextQueue.pop()
+        if (current) {
+            this.current = current
+        }
     }
 
     private updateCurrent(): void {

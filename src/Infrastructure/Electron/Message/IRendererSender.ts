@@ -1,5 +1,5 @@
-import {IMessage} from "./IMessage"
+import {IIntoMainMessage} from "./IIntoMainMessage"
 
 export interface IRendererSender {
-    sendToMain(message: IMessage): void
+    sendToMain(message: IIntoMainMessage): void
 }
