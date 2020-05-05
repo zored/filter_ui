@@ -7,6 +7,7 @@ import {IntoMainChannel} from "../../Message/Channel/IntoMainChannel"
 import {IIntoMainMessage} from "../../Message/IIntoMainMessage"
 import {IMainHandler} from "../../Message/IMainHandler"
 import {IMainSender} from "../../Message/IMainSender"
+import {LikeDoneMessage} from "../../Message/Message/LikeDoneMessage"
 import {LikeMessage} from "../../Message/Message/LikeMessage"
 import {UndoDoneMessage} from "../../Message/Message/UndoDoneMessage"
 import {UndoMessage} from "../../Message/Message/UndoMessage"
@@ -47,12 +48,13 @@ export class MainHandler implements IMainHandler {
         this.progress.wrapFunc(
             () => this.fs.moveSync(message.likedPath, message.originalPath)
         )
+        this.sender.sendToRenderer(new UndoDoneMessage())
     }
 
     private async like(likeMessage: LikeMessage): Promise<void> {
         await this.progress.wrapPromise(
             this.fileLiker.like(likeMessage)
         )
-        this.sender.sendToRenderer(new UndoDoneMessage())
+        this.sender.sendToRenderer(new LikeDoneMessage())
     }
 }

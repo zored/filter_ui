@@ -22,6 +22,16 @@ export class Timeline {
         return this.current || null
     }
 
+    getCurrentToLike(): TimelineItem | null {
+        const item = this.getCurrent()
+        if (item === null) {
+            return null
+        }
+
+        this.current = item.createAfterLike()
+        return item
+    }
+
     getPrevious(): PreviousItem | null {
         const previous = this.previousQueue.pop() || null
         if (previous === null) {

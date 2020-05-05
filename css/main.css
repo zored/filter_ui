@@ -2,33 +2,55 @@
     margin: 0;
     padding: 0;
 }
+
 #item > * {
     max-width: 100%;
     max-height: 100vh;
     margin: auto;
 }
+
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    font-family: Arial, sans-serif;
 }
+
 body {
     background-color: #000;
     color: #fff;
 }
+
 #info {
     position: fixed;
     bottom: 0;
-    left:0;
+    left: 0;
     background-color: #000;
     padding: 4px;
 }
+
 body.like {
     background-color: #0d470d;
 }
+
 body.dislike {
     background-color: #470d19;
 }
+
 #item, #done {
+    display: none;
+}
+
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 140%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
     display: none;
 }

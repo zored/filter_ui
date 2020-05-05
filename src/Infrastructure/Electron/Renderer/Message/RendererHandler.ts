@@ -13,6 +13,8 @@ export class RendererHandler implements IRendererHandler {
         const channel = message.channel
         switch (channel) {
             case IntoRendererChannel.likeDone:
+                this.progress.decrement()
+                break
             case IntoRendererChannel.undoDone:
                 this.progress.decrement()
                 break

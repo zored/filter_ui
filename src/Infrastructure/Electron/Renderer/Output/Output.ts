@@ -8,6 +8,7 @@ export class Output {
     private readonly done = document.getElementById("done")
     private readonly content = document.getElementById("item")
     private readonly info = document.getElementById("info")
+    private readonly loading = document.getElementById("loading")
     private videoSpeed = 1.2
     private videoSpeedDelta = 0.15
 
@@ -48,6 +49,17 @@ export class Output {
         }
         this.doRotate(num90 * 90)
         return true
+    }
+
+    setLoading(loading = true): void {
+        this.setVisible(this.loading, loading)
+    }
+
+    async setLoadingPromise<T>(promise: Promise<T>): Promise<T> {
+        this.setLoading(true)
+        const result = await promise
+        this.setLoading(false)
+        return result
     }
 
     private setVisible(element: HTMLElement, visible: boolean): void {

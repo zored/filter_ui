@@ -17,6 +17,7 @@ export class Progress {
 
     async done(): Promise<void> {
         this.waiting = true
+        console.log(`waiting "${this.name}" started`)
         while (this.count > 0) {
             await Timeout.promise(1000)
             console.log(`waiting "${this.name}": ${this.count}`)
@@ -44,7 +45,7 @@ export class Progress {
     }
 
     private add(delta: number): boolean {
-        if (this.waiting) {
+        if (this.waiting && delta > 0) {
             return false
         }
         this.count += delta

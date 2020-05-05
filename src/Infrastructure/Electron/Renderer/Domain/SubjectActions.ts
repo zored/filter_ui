@@ -27,6 +27,8 @@ export class SubjectActions implements ISubjectActions {
     }
 
     async load(): Async {
+        await this.done()
+
         this.timeline = await this.createTimeline()
         this.output.activateContent()
         this.refresh()
@@ -45,20 +47,20 @@ export class SubjectActions implements ISubjectActions {
     }
 
     async undo(): Async {
-        // All previous likes should succeed to undo:
-        await this.done()
+        await this.loading((async (): Promise<void> => {
+            await this.done()
 
-        const item = this.timeline.getPrevious()
-        if (item === null) {
-            return
-        }
-        if (!this.intoMain.undo(item)) {
-            this.timeline.revertPrevious(item)
-            return
-        }
-        await this.done()
-
-        this.refresh()
+            const item = this.timeline.getPrevious()
+            if (item === null) {
+                return
+            }
+            if (!this.intoMain.undo(item)) {
+                this.timeline.revertPrevious(item)
+                return
+            }
+            await this.intoMain.done()
+            this.refresh()
+        })())
     }
 
     refresh(): void {
@@ -99,7 +101,7 @@ export class SubjectActions implements ISubjectActions {
     }
 
     private async setLike(like: boolean): Async {
-        const item = this.timeline.getCurrent()
+        const item = this.timeline.getCurrentToLike()
         if (!item) {
             return
         }
@@ -111,5 +113,9 @@ export class SubjectActions implements ISubjectActions {
         this.output.like(like)
         this.timeline.toHistory(newPath)
         this.refresh()
+    }
+
+    private async loading<T>(promise: Promise<T>): Promise<T> {
+        return await this.output.setLoadingPromise(promise)
     }
 }

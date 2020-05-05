@@ -34,4 +34,8 @@ export class TimelineItem {
 
         return []
     }
+
+    createAfterLike(): TimelineItem {
+        return new TimelineItem(this.file, this.priority)
+    }
 }
