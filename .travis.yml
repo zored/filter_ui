@@ -1,9 +1,14 @@
-language: minimal
-services: [docker]
+os: windows
+language: node_js
+node_js:
+- 14
+install:
+- yarn install
 script:
-  - ./project.sh publish-via-docker
+- yarn run lint
+- yarn run publish-win
 cache:
   directories:
-    - node_modules
-    - dist
-    - build
+  - node_modules
+  - dist
+  - build
