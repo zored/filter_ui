@@ -11,7 +11,7 @@
     "postinstall": "electron-builder install-app-deps",
     "pack": "yarn run build && electron-builder --dir",
     "dist": "yarn run build && electron-builder",
-    "publish": "yarn run build && electron-builder build --win --publish"
+    "publish": "yarn run build && electron-builder build --publish onTagOrDraft"
   },
   "main": "./js/Infrastructure/main_app.js",
   "repository": {
