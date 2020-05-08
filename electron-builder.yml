@@ -1,6 +1,2 @@
 asar: false
 appId: gl.ro.filter_ui
-win:
-  publish:
-    - github
-    - bintray
