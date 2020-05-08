@@ -30,7 +30,7 @@ body {
 }
 
 body.like {
-    background-color: #0d470d;
+    background-color: #093b09;
 }
 
 body.dislike {
@@ -39,18 +39,25 @@ body.dislike {
 
 #item, #done {
     display: none;
+    height: 100%;
+}
+
+#done {
+    text-align: center;
+    align-content: center;
 }
 
 #loading {
     position: fixed;
-    top: 50%;
+    top: 0;
+    align-content: center;
     left: 0;
     right: 0;
+    bottom: 0;
+    opacity: 90%;
     padding: 10px;
-    font-weight: bold;
-    font-size: 140%;
-    background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
     text-align: center;
     display: none;
+    background-color: #333;
 }

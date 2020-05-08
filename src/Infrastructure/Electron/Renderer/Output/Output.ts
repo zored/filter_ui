@@ -15,9 +15,6 @@ export class Output {
     activateContent(enabled: boolean = true) {
         this.setVisible(this.content, enabled)
         this.setVisible(this.done, !enabled)
-        if (!enabled) {
-            this.setBodyClass('')
-        }
     }
 
     like(like: boolean): void {

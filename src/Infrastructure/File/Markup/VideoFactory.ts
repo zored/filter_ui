@@ -6,6 +6,7 @@ export class VideoFactory implements ElementFactory {
     createElement(file: MyFile): MyElement {
         const video = document.createElement('video')
         video.autoplay = true
+        video.loop = true
         video.appendChild(this.createSource(file.path))
         return new MyElement(video)
     }

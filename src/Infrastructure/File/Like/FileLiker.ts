@@ -15,7 +15,6 @@ export class FileLiker {
 
     async heavyLike(message: LikeMessage): Promise<LikeResult> {
         try {
-
             await this.fs.movePromise(message.fileFrom, message.fileTo)
             for (const command of message.commands) {
                 switch (command.id) {

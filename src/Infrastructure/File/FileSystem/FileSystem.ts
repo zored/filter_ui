@@ -13,7 +13,13 @@ export class FileSystem {
         await this.delayMove(source, newPath)
     }
 
-    moveSync(source: string, destination: FilePath, replace: boolean = false) {
+    async withTmp(path: FilePath, update: (tmp: FilePath) => Promise<void>): Promise<void> {
+        const tmp = path + '.tmp'
+        await update(tmp)
+        this.moveSync(tmp, path, true)
+    }
+
+    moveSync(source: FilePath, destination: FilePath, replace: boolean = false): void {
         const destinationExists = fs.existsSync(destination)
         if (destinationExists) {
             if (replace) {
@@ -34,12 +40,12 @@ export class FileSystem {
 
     private async delayRemove(file: string, retry = 0): Promise<void> {
         await Timeout.promise(removeTimeout)
-        await this.remove(file, retry)
+        await this.removeWhileBusy(file, retry)
     }
 
-    private async remove(file: string, retry = 0): Promise<void> {
+    private async removeWhileBusy(file: FilePath, retry = 0): Promise<void> {
         try {
-            await fs.promises.unlink(file)
+            await this.unlink(file)
             return
         } catch (err) {
             if (err === null) {
@@ -50,6 +56,10 @@ export class FileSystem {
             }
             await this.delayRemove(file, retry + 1)
         }
+    }
+
+    private unlink(file: FilePath) {
+        return fs.promises.unlink(file)
     }
 
     private createDirectorySync(directory: string): void {

@@ -12,10 +12,13 @@ export class TimelineItem {
     }
 
     getResultCommands(): Commands {
-        return this.commands.reduce(
+        console.log(this.commands)
+        const result = this.commands.reduce(
             (cs, c) => cs.concat(this.mergeRotates(cs.pop(), c)),
             [] as Commands
         )
+        console.log(result)
+        return result
     }
 
     private mergeRotates(previous: IItemCommand, current: IItemCommand): Commands {

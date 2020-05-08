@@ -15,7 +15,7 @@ export class DesktopApp {
     }
 
     static start(): void {
-        new DesktopApp(app, new WindowFactory(true)).run()
+        new DesktopApp(app, new WindowFactory(process.env.DEBUG === 'Y')).run()
     }
 
     private static isMacOs(): boolean {
