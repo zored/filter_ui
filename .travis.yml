@@ -1,12 +1,8 @@
-language: node_js
-install:
-  - yarn install
-  - yarn run lint
-  - yarn run publish
-node_js:
-  - stable
+language: minimal
+services: [docker]
+script:
+  - ./project.sh docker publish-via-docker
 cache:
-  yarn: true
   directories:
     - node_modules
     - dist
