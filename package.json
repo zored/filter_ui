@@ -1,6 +1,6 @@
 {
   "name": "filter_ui",
-  "version": "1.0.0",
+  "version": "0.0.4",
   "description": "UI to filter anything",
   "scripts": {
     "build": "tsc",
@@ -11,7 +11,8 @@
     "postinstall": "electron-builder install-app-deps",
     "pack": "yarn run build && electron-builder --dir",
     "dist": "yarn run build && electron-builder",
-    "publish": "yarn run build && electron-builder build --publish onTagOrDraft"
+    "publish": "yarn run build && electron-builder build --publish onTagOrDraft",
+    "test": "true"
   },
   "main": "./js/Infrastructure/main_app.js",
   "repository": {
