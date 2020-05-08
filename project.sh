@@ -5,8 +5,8 @@ case $1 in
     docker run --rm \
       -v "/$PWD:/build" \
       --workdir=//build \
-      node:14.2.0-alpine3.11 \
       --env GH_TOKEN=$GH_TOKEN \
+      node:14.2.0-alpine3.11 \
       //bin/sh -c "
           yarn install &&
           yarn run lint &&
