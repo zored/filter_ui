@@ -1,0 +1,10 @@
+asar: false
+appId: gl.ro.filter_ui
+mac:
+  category: xxx
+publish:
+  provider: github
+win:
+  publish:
+    - github
+    - bintray

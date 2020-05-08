@@ -1,0 +1,11 @@
+language: node_js
+install:
+  - yarn install
+  - yarn run lint
+  - yarn run publish
+node_js:
+  - stable
+cache:
+  yarn: true
+  directories:
+    - node_modules

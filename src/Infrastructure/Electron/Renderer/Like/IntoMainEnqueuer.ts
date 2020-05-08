@@ -9,8 +9,9 @@ import {RendererSender} from "../Message/RendererSender"
 
 export class IntoMainEnqueuer {
     private readonly progress = new Progress("renderer like/undo")
-    private readonly handler = new RendererHandler(this.progress)
     private readonly sender = new RendererSender()
+    private readonly handler = new RendererHandler(this.progress, this.sender)
+
 
     subscribe(): void {
         this.handler.subscribe()

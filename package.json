@@ -10,17 +10,14 @@
     "package_win64": "yarn run build && electron-packager . filter_ui --platform=win32 --arch=x64 --overwrite --out=build",
     "postinstall": "electron-builder install-app-deps",
     "pack": "yarn run build && electron-builder --dir",
-    "dist": "yarn run build && electron-builder"
-  },
-  "build": {
-    "asar": false,
-    "appId": "gl.ro.filter_ui",
-    "mac": {
-      "category": "xxx"
-    }
+    "dist": "yarn run build && electron-builder",
+    "publish": "yarn run build && electron-builder build --win --publish"
   },
   "main": "./js/Infrastructure/main_app.js",
-  "repository": "https://github.com/zored/filter_ui",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zored/filter_ui"
+  },
   "keywords": [
     "filter",
     "ui",
@@ -40,6 +37,7 @@
   "dependencies": {
     "@types/jimp": "^0.2.28",
     "@types/sharp": "^0.25.0",
+    "electron-updater": "^4.3.1",
     "sharp": "^0.25.2"
   }
 }

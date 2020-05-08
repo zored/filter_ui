@@ -1,4 +1,5 @@
 export enum IntoRendererChannel {
     likeDone = 'likeDone',
-    undoDone = 'undoDone'
+    undoDone = 'undoDone',
+    update = 'update',
 }

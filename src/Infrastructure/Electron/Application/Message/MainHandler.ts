@@ -9,8 +9,10 @@ import {IMainHandler} from "../../Message/IMainHandler"
 import {IMainSender} from "../../Message/IMainSender"
 import {LikeDoneMessage} from "../../Message/Message/LikeDoneMessage"
 import {LikeMessage} from "../../Message/Message/LikeMessage"
+import {RestartAndUpdateMessage} from "../../Message/Message/RestartAndUpdateMessage"
 import {UndoDoneMessage} from "../../Message/Message/UndoDoneMessage"
 import {UndoMessage} from "../../Message/Message/UndoMessage"
+import {Updater} from "../Updater"
 
 export class MainHandler implements IMainHandler {
     private readonly fileLiker = new FileLiker()
@@ -19,9 +21,10 @@ export class MainHandler implements IMainHandler {
     private handlers: Record<IntoMainChannel, (message: IIntoMainMessage) => any> = {
         [IntoMainChannel.like]: this.like,
         [IntoMainChannel.undo]: this.undo,
+        [IntoMainChannel.update]: this.restartAndUpdate,
     }
 
-    constructor(private readonly sender: IMainSender) {
+    constructor(private readonly sender: IMainSender, private updater: Updater) {
     }
 
     handle(message: IIntoMainMessage): void {
@@ -42,6 +45,10 @@ export class MainHandler implements IMainHandler {
             ipcMain,
             message => this.handle(message as IIntoMainMessage)
         )
+    }
+
+    private restartAndUpdate(_: RestartAndUpdateMessage): void {
+        this.updater.update()
     }
 
     private undo(message: UndoMessage): void {
