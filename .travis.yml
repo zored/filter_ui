@@ -1,7 +1,7 @@
 language: minimal
 services: [docker]
 script:
-  - ./project.sh docker publish-via-docker
+  - ./project.sh publish-via-docker
 cache:
   directories:
     - node_modules

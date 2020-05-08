@@ -1,6 +1,6 @@
 {
   "name": "filter_ui",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "UI to filter anything",
   "scripts": {
     "build": "tsc",
