@@ -5,6 +5,7 @@ import {Progress} from "../../../Utils/Progress"
 import {Channels} from "../../Message/Channel/Channels"
 import {IntoMainChannel} from "../../Message/Channel/IntoMainChannel"
 import {IIntoMainMessage} from "../../Message/IIntoMainMessage"
+import {IntoRendererMessageId} from "../../Message/IIntoRendererMessage"
 import {IMainHandler} from "../../Message/IMainHandler"
 import {IMainSender} from "../../Message/IMainSender"
 import {LikeDoneMessage} from "../../Message/Message/LikeDoneMessage"
@@ -23,20 +24,17 @@ export class MainHandler implements IMainHandler {
         [IntoMainChannel.undo]: this.undo,
         [IntoMainChannel.update]: this.restartAndUpdate,
     }
+    private waiters: Record<IntoRendererMessageId, (message: IIntoMainMessage) => void>
 
     constructor(private readonly sender: IMainSender, private updater: Updater) {
     }
 
-    handle(message: IIntoMainMessage): void {
-        const handler = this.handlers[message.channel]
-        if (!handler) {
-            throw new Error(`No handler for channel ${message.channel}`)
-        }
-        handler.apply(this, [message])
-    }
-
     async done(): Promise<void> {
         await this.progress.done()
+    }
+
+    wait(channel: IntoMainChannel, id: IntoRendererMessageId): Promise<IIntoMainMessage> {
+        return new Promise<IIntoMainMessage>(resolve => this.waiters[id] = resolve)
     }
 
     subscribe(): void {
@@ -45,6 +43,20 @@ export class MainHandler implements IMainHandler {
             ipcMain,
             message => this.handle(message as IIntoMainMessage)
         )
+    }
+
+    private handle(message: IIntoMainMessage): void {
+        const waiter = this.waiters[message.responseTo]
+        if (waiter) {
+            waiter(message)
+            return
+        }
+
+        const handler = this.handlers[message.channel]
+        if (!handler) {
+            throw new Error(`No handler for channel ${message.channel}`)
+        }
+        handler.apply(this, [message])
     }
 
     private restartAndUpdate(_: RestartAndUpdateMessage): void {

@@ -1,13 +1,14 @@
 import * as fs from "fs"
 import {MyFile} from "../MyFile"
+import {IDirectoryFileRetriever} from "./IDirectoryFileRetriever"
 
-type FileStack = MyFile[];
+export type FileStack = MyFile[];
 
-export class DirectoryFileRetriever {
+export class DirectoryFileRetriever implements IDirectoryFileRetriever {
     constructor(private readonly recursive = false) {
     }
 
-    public getFiles(directories: string[]): FileStack {
+    getFiles(directories: string[]): FileStack {
         return directories.flatMap(directory => this.getDirectoryFiles(directory))
     }
 

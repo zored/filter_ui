@@ -4,6 +4,7 @@ import {ElementFactory} from "../../../File/Markup/ElementFactory"
 import {TitledFactory} from "../../../File/Markup/TitledFactory"
 import {MyFile} from "../../../File/MyFile"
 import {DirectoryFileRetriever} from "../../../File/Retriever/DirectoryFileRetriever"
+import {IDirectoryFileRetriever} from "../../../File/Retriever/IDirectoryFileRetriever"
 import {RotateCommand} from "../../../File/Timeline/Command/RotateCommand"
 import {Timeline} from "../../../File/Timeline/Timeline"
 import {TimelineFactory} from "../../../File/Timeline/TimelineFactory"
@@ -19,7 +20,7 @@ export class SubjectActions implements ISubjectActions {
     private readonly elementFactory: ElementFactory = new TitledFactory()
     private readonly paths = new Paths()
     private readonly directoryPrompt = new DirectoryPrompt()
-    private readonly fileRetriever = new DirectoryFileRetriever()
+    private readonly fileRetriever: IDirectoryFileRetriever = new DirectoryFileRetriever()
     private readonly intoMain = new IntoMainEnqueuer()
     private first = true
 
@@ -93,10 +94,11 @@ export class SubjectActions implements ISubjectActions {
     }
 
     private async createTimeline(): Promise<Timeline> {
+        const directories = await this.directoryPrompt.getDirectories()
+
+        const files = this.fileRetriever.getFiles(directories)
         return this.timelineFactory.createFromFiles(
-            this.fileRetriever.getFiles(
-                await this.directoryPrompt.getDirectories()
-            )
+            files
         )
     }
 
