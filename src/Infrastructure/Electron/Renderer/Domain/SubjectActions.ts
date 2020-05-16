@@ -70,6 +70,8 @@ export class SubjectActions implements ISubjectActions {
             return
         }
         const element = this.elementFactory.createElement(file)
+
+        this.timeline.getUpcomingFiles(10).forEach(file => this.elementFactory.createElement(file))
         this.output.setContent(element)
     }
 
@@ -85,7 +87,6 @@ export class SubjectActions implements ISubjectActions {
         }
         item.commands.push(new RotateCommand(num90))
     }
-
 
     private getFile(): MyFile {
         return this.timeline.getCurrent()?.file

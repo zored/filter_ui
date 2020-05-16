@@ -1,3 +1,4 @@
+import {MyFile} from "../MyFile"
 import {PreviousItem} from "./PreviousItem"
 import {TimelineItem} from "./TimelineItem"
 
@@ -50,6 +51,10 @@ export class Timeline {
         if (current) {
             this.current = current
         }
+    }
+
+    getUpcomingFiles(number: number): MyFile[] {
+        return this.nextQueue.slice(this.nextQueue.length - number).map(v => v.file)
     }
 
     private updateCurrent(): void {
