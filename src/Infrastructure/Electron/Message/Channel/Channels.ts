@@ -1,4 +1,3 @@
-import {IMessage} from "../Message/IMessage"
 import EventEmitter = NodeJS.EventEmitter
 
 export class Channels {
@@ -20,7 +19,7 @@ export class Channels {
         ).forEach(f)
     }
 
-    static subscribe<T extends string>(channels: Object, ipc: EventEmitter, handle: (message: IMessage) => void) {
+    static subscribe<T extends string>(channels: Object, ipc: EventEmitter, handle: (message: any) => void) {
         Channels.eachUnique<T>(
             channels,
             channel => ipc.on(channel, (_, message) => handle(message))

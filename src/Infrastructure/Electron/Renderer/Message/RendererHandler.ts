@@ -10,7 +10,7 @@ import {IRendererHandler} from "./IRendererHandler"
 import {IRendererSender} from "./IRendererSender"
 
 export class RendererHandler implements IRendererHandler {
-    private waiters: Record<RendererMessageId, (message: IMainMessage) => void>
+    private waiters: Record<RendererMessageId, (message: IMainMessage) => void> = {}
 
     constructor(private progress: Progress, private sender: IRendererSender) {
     }

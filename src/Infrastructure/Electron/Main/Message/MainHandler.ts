@@ -4,7 +4,7 @@ import {FileStack} from "../../../File/Retriever/DirectoryFileRetriever"
 import {Progress} from "../../../Utils/Progress"
 import {Channels} from "../../Message/Channel/Channels"
 import {RendererChannel} from "../../Message/Channel/RendererChannel"
-import {MainMessageId} from "../../Message/Message/IMainMessage"
+import {IMainMessage, MainMessageId} from "../../Message/Message/IMainMessage"
 import {IRendererMessage} from "../../Message/Message/IRendererMessage"
 import {LikeDoneMessage} from "../../Message/Message/Main/LikeDoneMessage"
 import {SendFilesMessage} from "../../Message/Message/Main/SendFilesMessage"
@@ -27,11 +27,11 @@ export class MainHandler implements IMainHandler {
         [RendererChannel.update]: this.restartAndUpdate,
         [RendererChannel.getFiles]: this.getFiles,
     }
-    private waiters: Record<MainMessageId, (message: IRendererMessage) => void>
+    private waiters: Record<MainMessageId, (message: IRendererMessage) => void> = {}
     private worker = new RendererWorker()
 
     constructor(
-        private readonly sender: IMainSender,
+        private readonly renderer: IMainSender,
         private updater: Updater
     ) {
     }
@@ -69,7 +69,12 @@ export class MainHandler implements IMainHandler {
 
     private async getFiles(message: GetFilesMessage): Promise<void> {
         const files: FileStack = await this.toWorker(message)
-        this.sender.send(new SendFilesMessage(files, message.id))
+        this.respond(message, new SendFilesMessage(files))
+    }
+
+    private respond(messageIn: IRendererMessage, messageOut: IMainMessage): void {
+        messageOut.responseTo = messageIn.id
+        this.renderer.send(messageOut)
     }
 
     private restartAndUpdate(_: RestartAndUpdateMessage): void {
@@ -80,12 +85,12 @@ export class MainHandler implements IMainHandler {
         this.progress.wrapFunc(
             () => this.fs.moveSync(message.likedPath, message.originalPath)
         )
-        this.sender.send(new UndoDoneMessage())
+        this.respond(message, new UndoDoneMessage())
     }
 
     private async like(message: LikeMessage): Promise<void> {
         await this.toWorker(message)
-        this.sender.send(new LikeDoneMessage(message.id))
+        this.renderer.send(new LikeDoneMessage(message.id))
     }
 
     private async toWorker(message: IRendererMessage): Promise<any> {

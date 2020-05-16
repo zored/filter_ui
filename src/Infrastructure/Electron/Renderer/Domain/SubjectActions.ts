@@ -26,13 +26,12 @@ export class SubjectActions implements ISubjectActions {
 
     async load(): Async {
         await this.done()
-
-        this.timeline = await this.createTimeline()
-        this.output.activateContent()
-        this.refresh()
         if (this.first) {
             this.main.subscribe()
         }
+        this.timeline = await this.createTimeline()
+        this.output.activateContent()
+        this.refresh()
         this.first = false
     }
 

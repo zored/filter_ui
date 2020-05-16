@@ -20,6 +20,6 @@ export class Updater {
     }
 
     private send(message: IMainMessage): void {
-        this.sender.sendToRenderer(message)
+        this.sender.send(message)
     }
 }

@@ -1,6 +1,7 @@
 import * as fs from "fs"
 import {GetFilesMessage} from "../../Electron/Message/Message/Renderer/GetFilesMessage"
 import {MyFile} from "../MyFile"
+import {MyStats} from "../MyStats"
 import {IDirectoryFileRetriever} from "./IDirectoryFileRetriever"
 
 export type FileStack = MyFile[];
@@ -25,7 +26,7 @@ export class DirectoryFileRetriever implements IDirectoryFileRetriever {
         const stats = fs.lstatSync(path)
         let isDirectory = stats.isDirectory()
         if (!isDirectory) {
-            return [new MyFile(path, stats)]
+            return [new MyFile(path, MyStats.fromStats(stats))]
         }
         if (this.recursive) {
             return this.getDirectoryFiles(path)
