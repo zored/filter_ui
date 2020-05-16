@@ -37,6 +37,7 @@ export class Output {
     }
 
     setInfo(text: string): void {
+        this.setVisible(this.info, text.length > 0)
         this.info.innerText = text
     }
 

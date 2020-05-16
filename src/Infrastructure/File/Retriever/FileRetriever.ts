@@ -10,7 +10,8 @@ type SendInfo = (info: string) => void
 
 export class FileRetriever implements IDirectoryFileRetriever {
     private lastSendInfo: Date = new Date()
-    private files: number = 0
+    private files = 0
+    private totalFiles = 0
 
     constructor(
         private readonly recursive = false,
@@ -19,7 +20,7 @@ export class FileRetriever implements IDirectoryFileRetriever {
     }
 
     async getFiles(directories: string[]): Promise<FileStack> {
-        this.files = 0
+        this.files = this.totalFiles = 0
         return (await Promise.all(directories.flatMap(directory => this.getDirectoryFiles(directory)))).flat()
     }
 
@@ -28,9 +29,10 @@ export class FileRetriever implements IDirectoryFileRetriever {
     }
 
     private async getDirectoryFiles(dir: string): Promise<FileStack> {
-        return (await Promise.all(
-            fs.readdirSync(dir).flatMap(fileRelative => this.getMyFiles(dir + '/' + fileRelative))
-        )).flat()
+        const directoryFiles = await fs.promises.readdir(dir)
+        this.totalFiles += directoryFiles.length
+        const filesPromises = directoryFiles.flatMap(fileRelative => this.getMyFiles(dir + '/' + fileRelative))
+        return (await Promise.all(filesPromises)).flat()
     }
 
     private async getMyFiles(path: string): Promise<MyFile[]> {
@@ -53,6 +55,6 @@ export class FileRetriever implements IDirectoryFileRetriever {
             return
         }
         this.lastSendInfo = now
-        this.sendInfo(`Loaded ${this.files} files...`)
+        this.sendInfo(`Loaded ${this.files} of ${this.totalFiles} files...`)
     }
 }
