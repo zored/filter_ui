@@ -21,6 +21,10 @@ export class TimelineItem {
         return result
     }
 
+    createAfterLike(): TimelineItem {
+        return new TimelineItem(this.file, this.priority)
+    }
+
     private mergeRotates(previous: IItemCommand, current: IItemCommand): Commands {
         if (!previous) {
             return [current]
@@ -36,9 +40,5 @@ export class TimelineItem {
         }
 
         return []
-    }
-
-    createAfterLike(): TimelineItem {
-        return new TimelineItem(this.file, this.priority)
     }
 }

@@ -1,15 +1,16 @@
-import {IIntoRendererMessage} from "../../Message/IIntoRendererMessage"
-import {IMainSender} from "../../Message/IMainSender"
+import {IMainMessage} from "../../Message/Message/IMainMessage"
+import {IMainSender} from "./IMainSender"
 import BrowserWindow = Electron.BrowserWindow
 
 export class MainSender implements IMainSender {
-    private lastId = 0
+    private lastId = 1
+
     constructor(public window: BrowserWindow) {
     }
 
-    sendToRenderer(message: IIntoRendererMessage): void {
-        this.lastId++
+    send(message: IMainMessage): void {
         message.id = this.lastId
+        this.lastId++
         this.window.webContents.send(message.channel, message)
     }
 }

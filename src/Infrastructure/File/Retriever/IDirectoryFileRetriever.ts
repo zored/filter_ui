@@ -1,5 +1,5 @@
 import {FileStack} from "./DirectoryFileRetriever"
 
 export interface IDirectoryFileRetriever {
-    getFiles(directories: string[]): FileStack
+    getFiles(directories: string[]): Promise<FileStack>
 }

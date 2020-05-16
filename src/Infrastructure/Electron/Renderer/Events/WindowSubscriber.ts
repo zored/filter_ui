@@ -8,7 +8,8 @@ export class WindowSubscriber {
     subscribe() {
         window.addEventListener('beforeunload', event => {
             event.returnValue = false
-            this.delayClose()
+            this.delayClose().then(() => {
+            })
         })
     }
 

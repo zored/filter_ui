@@ -1,7 +1,4 @@
-import {once} from "events"
-import {Worker} from "worker_threads"
-import {Path} from "../../Electron/Application/Path"
-import {LikeMessage} from "../../Electron/Message/Message/LikeMessage"
+import {LikeMessage} from "../../Electron/Message/Message/Renderer/LikeMessage"
 import {FileSystem} from "../FileSystem/FileSystem"
 import {ImageRotator} from "../Image/ImageRotator"
 import {CommandId} from "../Timeline/Command/CommandId"
@@ -28,13 +25,5 @@ export class FileLiker {
             return e + ''
         }
         return null
-    }
-
-    async like(workerData: LikeMessage): Promise<LikeResult> {
-        const path = Path.getAbsolute('js/Infrastructure/worker_like.js')
-        const worker = new Worker(path, {workerData})
-        const [likeResult] = await once(worker, 'message')
-        await worker.terminate()
-        return likeResult
     }
 }

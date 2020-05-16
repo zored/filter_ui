@@ -1,7 +1,7 @@
 import {autoUpdater} from "electron-updater"
-import {IIntoRendererMessage} from "../Message/IIntoRendererMessage"
-import {IMainSender} from "../Message/IMainSender"
-import {NotifyUpdateMessage} from "../Message/Message/NotifyUpdateMessage"
+import {IMainMessage} from "../Message/Message/IMainMessage"
+import {NotifyUpdateMessage} from "../Message/Message/Main/NotifyUpdateMessage"
+import {IMainSender} from "./Message/IMainSender"
 import BrowserWindow = Electron.BrowserWindow
 
 export class Updater {
@@ -19,7 +19,7 @@ export class Updater {
         autoUpdater.quitAndInstall()
     }
 
-    private send(message: IIntoRendererMessage): void {
+    private send(message: IMainMessage): void {
         this.sender.sendToRenderer(message)
     }
 }

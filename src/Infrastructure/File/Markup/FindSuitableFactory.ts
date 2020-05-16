@@ -16,7 +16,7 @@ export class FindSuitableFactory implements ElementFactory {
         return this.factories.find(factory => factory.suits(file)).createElement(file)
     }
 
-    suits(file: MyFile): boolean {
+    suits(_: MyFile): boolean {
         return true
     }
 

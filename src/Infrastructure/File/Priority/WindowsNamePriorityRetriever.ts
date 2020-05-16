@@ -4,7 +4,7 @@ import {Priority, PriorityRetriever} from "./PriorityRetriever"
 export class WindowsNamePriorityRetriever implements PriorityRetriever {
     private priority: Priority
 
-    getPriority(file: MyFile): Priority {
+    getPriority(_: MyFile): Priority {
         return this.priority
     }
 

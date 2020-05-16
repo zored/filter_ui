@@ -34,7 +34,10 @@ export class Progress {
     }
 
     async wrapPromise<T>(promise: Promise<T>): Promise<T | null> {
-        this.increment()
+        if (!this.increment()) {
+            return Promise.reject("progress is busy")
+        }
+
         try {
             return await promise
         } finally {

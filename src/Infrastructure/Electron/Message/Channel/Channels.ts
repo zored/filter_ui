@@ -1,4 +1,4 @@
-import {IMessage} from "../IMessage"
+import {IMessage} from "../Message/IMessage"
 import EventEmitter = NodeJS.EventEmitter
 
 export class Channels {

@@ -21,7 +21,7 @@ export class DefaultPriorityRetriever implements PriorityRetriever {
         return retriever.getPriority(file)
     }
 
-    suits(file: MyFile): boolean {
+    suits(_: MyFile): boolean {
         return true
     }
 

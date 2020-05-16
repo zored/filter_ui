@@ -16,7 +16,7 @@ export class TitledFactory implements ElementFactory {
         return new MyElement(htmlElement, child.rotate)
     }
 
-    suits(file: MyFile): boolean {
+    suits(_: MyFile): boolean {
         return true
     }
 

@@ -9,7 +9,7 @@ export class NullFactory implements ElementFactory {
         return new MyElement(div)
     }
 
-    suits(file: MyFile): boolean {
+    suits(_: MyFile): boolean {
         return true
     }
 

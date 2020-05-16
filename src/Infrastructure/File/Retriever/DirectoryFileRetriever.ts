@@ -1,4 +1,5 @@
 import * as fs from "fs"
+import {GetFilesMessage} from "../../Electron/Message/Message/Renderer/GetFilesMessage"
 import {MyFile} from "../MyFile"
 import {IDirectoryFileRetriever} from "./IDirectoryFileRetriever"
 
@@ -8,12 +9,16 @@ export class DirectoryFileRetriever implements IDirectoryFileRetriever {
     constructor(private readonly recursive = false) {
     }
 
-    getFiles(directories: string[]): FileStack {
+    async getFiles(directories: string[]): Promise<FileStack> {
         return directories.flatMap(directory => this.getDirectoryFiles(directory))
     }
 
     private getDirectoryFiles(dir: string): FileStack {
         return fs.readdirSync(dir).flatMap(fileRelative => this.getMyFiles(dir + '/' + fileRelative))
+    }
+
+    getFilesMessage(message: GetFilesMessage): Promise<FileStack> {
+        return this.getFiles(message.directories)
     }
 
     private getMyFiles(path: string): MyFile[] {
@@ -26,6 +31,5 @@ export class DirectoryFileRetriever implements IDirectoryFileRetriever {
             return this.getDirectoryFiles(path)
         }
         return []
-
     }
 }

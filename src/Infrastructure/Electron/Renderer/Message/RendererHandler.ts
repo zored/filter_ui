@@ -1,27 +1,31 @@
 import {ipcRenderer} from 'electron'
 import {Progress} from "../../../Utils/Progress"
 import {Channels} from "../../Message/Channel/Channels"
-import {IntoRendererChannel} from "../../Message/Channel/IntoRendererChannel"
-import {IIntoRendererMessage} from "../../Message/IIntoRendererMessage"
-import {IRendererHandler} from "../../Message/IRendererHandler"
-import {IRendererSender} from "../../Message/IRendererSender"
-import {NotifyUpdateMessage} from "../../Message/Message/NotifyUpdateMessage"
-import {RestartAndUpdateMessage} from "../../Message/Message/RestartAndUpdateMessage"
+import {MainChannel} from "../../Message/Channel/MainChannel"
+import {IMainMessage} from "../../Message/Message/IMainMessage"
+import {RendererMessageId} from "../../Message/Message/IRendererMessage"
+import {NotifyUpdateMessage} from "../../Message/Message/Main/NotifyUpdateMessage"
+import {RestartAndUpdateMessage} from "../../Message/Message/Renderer/RestartAndUpdateMessage"
+import {IRendererHandler} from "./IRendererHandler"
+import {IRendererSender} from "./IRendererSender"
 
 export class RendererHandler implements IRendererHandler {
+    private waiters: Record<RendererMessageId, (message: IMainMessage) => void>
+
     constructor(private progress: Progress, private sender: IRendererSender) {
     }
 
-    handle(message: IIntoRendererMessage): void {
+    handle(message: IMainMessage): void {
+        const waiter = this.waiters[message.responseTo]
+        if (waiter) {
+            delete this.waiters[message.responseTo]
+            waiter(message)
+            return
+        }
+
         const channel = message.channel
         switch (channel) {
-            case IntoRendererChannel.likeDone:
-                this.progress.decrement()
-                break
-            case IntoRendererChannel.undoDone:
-                this.progress.decrement()
-                break
-            case IntoRendererChannel.update:
+            case MainChannel.update:
                 this.handleUpdate(message as NotifyUpdateMessage)
                 break
             default:
@@ -32,10 +36,14 @@ export class RendererHandler implements IRendererHandler {
 
     subscribe(): void {
         Channels.subscribe(
-            IntoRendererChannel,
+            MainChannel,
             ipcRenderer,
-            message => this.handle(message as IIntoRendererMessage)
+            message => this.handle(message as IMainMessage)
         )
+    }
+
+    waitResponse(channel: MainChannel, inResponseToId: RendererMessageId): Promise<IMainMessage> {
+        return new Promise<IMainMessage>(resolve => this.waiters[inResponseToId] = resolve)
     }
 
     private handleUpdate(message: NotifyUpdateMessage): void {
@@ -47,7 +55,7 @@ export class RendererHandler implements IRendererHandler {
 
         this.progress.decrement()
         this.info('Update complete')
-        this.sender.sendToMain(new RestartAndUpdateMessage())
+        this.sender.send(new RestartAndUpdateMessage())
     }
 
     private info(message: string): void {

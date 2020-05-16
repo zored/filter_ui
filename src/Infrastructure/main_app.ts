@@ -1,3 +1,3 @@
-import {DesktopApp} from "./Electron/Application/DesktopApp"
+import {DesktopApp} from "./Electron/Main/DesktopApp"
 
 DesktopApp.start()

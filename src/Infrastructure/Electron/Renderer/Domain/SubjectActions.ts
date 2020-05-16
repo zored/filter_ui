@@ -3,13 +3,11 @@ import {Paths} from "../../../File/FileSystem/Paths"
 import {ElementFactory} from "../../../File/Markup/ElementFactory"
 import {TitledFactory} from "../../../File/Markup/TitledFactory"
 import {MyFile} from "../../../File/MyFile"
-import {DirectoryFileRetriever} from "../../../File/Retriever/DirectoryFileRetriever"
-import {IDirectoryFileRetriever} from "../../../File/Retriever/IDirectoryFileRetriever"
 import {RotateCommand} from "../../../File/Timeline/Command/RotateCommand"
 import {Timeline} from "../../../File/Timeline/Timeline"
 import {TimelineFactory} from "../../../File/Timeline/TimelineFactory"
 import {DirectoryPrompt} from "../Input/DirectoryPrompt"
-import {IntoMainEnqueuer} from "../Like/IntoMainEnqueuer"
+import {MainClient} from "../Like/MainClient"
 import {Output} from "../Output/Output"
 
 type Async = Promise<void>
@@ -20,8 +18,7 @@ export class SubjectActions implements ISubjectActions {
     private readonly elementFactory: ElementFactory = new TitledFactory()
     private readonly paths = new Paths()
     private readonly directoryPrompt = new DirectoryPrompt()
-    private readonly fileRetriever: IDirectoryFileRetriever = new DirectoryFileRetriever()
-    private readonly intoMain = new IntoMainEnqueuer()
+    private readonly main = new MainClient()
     private first = true
 
     constructor(private readonly output: Output) {
@@ -34,7 +31,7 @@ export class SubjectActions implements ISubjectActions {
         this.output.activateContent()
         this.refresh()
         if (this.first) {
-            this.intoMain.subscribe()
+            this.main.subscribe()
         }
         this.first = false
     }
@@ -48,19 +45,21 @@ export class SubjectActions implements ISubjectActions {
     }
 
     async undo(): Async {
-        await this.loading((async (): Promise<void> => {
+        await this.loading((async () => {
             await this.done()
 
             const item = this.timeline.getPrevious()
             if (item === null) {
                 return
             }
-            if (!this.intoMain.undo(item)) {
+
+            try {
+                await this.main.undo(item)
+            } catch (e) {
                 this.timeline.revertPrevious(item)
-                return
+            } finally {
+                this.refresh()
             }
-            await this.intoMain.done()
-            this.refresh()
         })())
     }
 
@@ -76,7 +75,7 @@ export class SubjectActions implements ISubjectActions {
     }
 
     async done(): Async {
-        await this.intoMain.done()
+        await this.main.done()
     }
 
     async rotate(num90: number): Async {
@@ -95,11 +94,8 @@ export class SubjectActions implements ISubjectActions {
 
     private async createTimeline(): Promise<Timeline> {
         const directories = await this.directoryPrompt.getDirectories()
-
-        const files = this.fileRetriever.getFiles(directories)
-        return this.timelineFactory.createFromFiles(
-            files
-        )
+        const files = await this.main.getFiles(directories)
+        return this.timelineFactory.createFromFiles(files)
     }
 
     private async setLike(like: boolean): Async {
@@ -109,9 +105,8 @@ export class SubjectActions implements ISubjectActions {
         }
         const directoryName = like ? 'like' : 'dislike'
         const newPath = this.paths.getMoveToNeighbourDirectoryPath(item.file.path, directoryName)
-        if (!this.intoMain.like(like, item, newPath)) {
-            return
-        }
+        this.main.like(like, item, newPath).then(() => {
+        })
         this.output.like(like)
         this.timeline.toHistory(newPath)
         this.refresh()
