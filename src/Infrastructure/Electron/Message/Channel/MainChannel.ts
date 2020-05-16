@@ -3,4 +3,5 @@ export enum MainChannel {
     undoDone = 'undoDone',
     update = 'update',
     sendFiles = 'sendFiles',
+    info = 'info',
 }

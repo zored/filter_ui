@@ -1,4 +1,4 @@
-import {FileStack} from "../../../File/Retriever/DirectoryFileRetriever"
+import {FileStack} from "../../../File/Retriever/FileRetriever"
 import {PreviousItem} from "../../../File/Timeline/PreviousItem"
 import {TimelineItem} from "../../../File/Timeline/TimelineItem"
 import {Progress} from "../../../Utils/Progress"
@@ -14,6 +14,7 @@ import {UndoMessage} from "../../Message/Message/Renderer/UndoMessage"
 import {RendererExchanger} from "../Message/RendererExchanger"
 import {RendererHandler} from "../Message/RendererHandler"
 import {RendererSender} from "../Message/RendererSender"
+import {Output} from "../Output/Output"
 
 export class MainClient {
     private readonly progress = new Progress("MainClient progress")
@@ -21,7 +22,8 @@ export class MainClient {
     private readonly handler = new RendererHandler(this.progress, this.sender)
     private readonly exchanger = new RendererExchanger(this.sender, this.handler)
 
-    subscribe(): void {
+    subscribe(output: Output): void {
+        this.handler.setOutput(output)
         this.handler.subscribe()
     }
 

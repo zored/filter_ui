@@ -10,7 +10,7 @@ export class FileLiker {
     private readonly fs = new FileSystem()
     private readonly imageRotator = new ImageRotator(this.fs)
 
-    async heavyLike(message: LikeMessage): Promise<LikeResult> {
+    async like(message: LikeMessage): Promise<LikeResult> {
         try {
             await this.fs.movePromise(message.fileFrom, message.fileTo)
             for (const command of message.commands) {

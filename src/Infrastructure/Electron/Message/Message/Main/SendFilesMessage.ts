@@ -1,4 +1,4 @@
-import {FileStack} from "../../../../File/Retriever/DirectoryFileRetriever"
+import {FileStack} from "../../../../File/Retriever/FileRetriever"
 import {MainChannel} from "../../Channel/MainChannel"
 import {IMainMessage} from "../IMainMessage"
 

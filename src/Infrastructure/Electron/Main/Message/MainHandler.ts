@@ -1,6 +1,6 @@
 import {ipcMain} from 'electron'
 import {FileSystem} from "../../../File/FileSystem/FileSystem"
-import {FileStack} from "../../../File/Retriever/DirectoryFileRetriever"
+import {FileStack} from "../../../File/Retriever/FileRetriever"
 import {Progress} from "../../../Utils/Progress"
 import {Channels} from "../../Message/Channel/Channels"
 import {RendererChannel} from "../../Message/Channel/RendererChannel"
@@ -14,7 +14,7 @@ import {LikeMessage} from "../../Message/Message/Renderer/LikeMessage"
 import {RestartAndUpdateMessage} from "../../Message/Message/Renderer/RestartAndUpdateMessage"
 import {UndoMessage} from "../../Message/Message/Renderer/UndoMessage"
 import {Updater} from "../Updater"
-import {RendererWorker} from "../Worker/RendererWorker"
+import {WorkerForRenderer} from "../Worker/WorkerForRenderer"
 import {IMainHandler} from "./IMainHandler"
 import {IMainSender} from "./IMainSender"
 
@@ -28,11 +28,11 @@ export class MainHandler implements IMainHandler {
         [RendererChannel.getFiles]: this.getFiles,
     }
     private waiters: Record<MainMessageId, (message: IRendererMessage) => void> = {}
-    private worker = new RendererWorker()
+    private worker = new WorkerForRenderer(this.sender)
 
     constructor(
-        private readonly renderer: IMainSender,
-        private updater: Updater
+        private readonly sender: IMainSender,
+        private updater: Updater,
     ) {
     }
 
@@ -74,7 +74,7 @@ export class MainHandler implements IMainHandler {
 
     private respond(messageIn: IRendererMessage, messageOut: IMainMessage): void {
         messageOut.responseTo = messageIn.id
-        this.renderer.send(messageOut)
+        this.sender.send(messageOut)
     }
 
     private restartAndUpdate(_: RestartAndUpdateMessage): void {
@@ -90,12 +90,12 @@ export class MainHandler implements IMainHandler {
 
     private async like(message: LikeMessage): Promise<void> {
         await this.toWorker(message)
-        this.renderer.send(new LikeDoneMessage(message.id))
+        this.sender.send(new LikeDoneMessage(message.id))
     }
 
     private async toWorker(message: IRendererMessage): Promise<any> {
         return await this.progress.wrapPromise(
-            this.worker.handle(message)
+            this.worker.workOnMessage(message)
         )
     }
 }
