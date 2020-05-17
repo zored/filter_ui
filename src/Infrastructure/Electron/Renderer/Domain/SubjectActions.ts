@@ -30,6 +30,7 @@ export class SubjectActions implements ISubjectActions {
             this.main.subscribe(this.output)
         }
         this.timeline = await this.createTimeline()
+        this.output.setInfo('')
         this.output.activateContent()
         this.refresh()
         this.first = false

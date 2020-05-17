@@ -12,7 +12,7 @@
     "pack": "yarn run build && electron-builder --dir",
     "dist": "yarn run build && electron-builder",
     "publish-win": "yarn run build && electron-builder build --win --publish onTagOrDraft",
-    "test": "true"
+    "test": "yarn jest"
   },
   "main": "./js/Infrastructure/main_app.js",
   "repository": {
@@ -28,10 +28,13 @@
   "author": "zored",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^25.2.2",
     "@types/node": "12",
     "electron": "8.2.3",
     "electron-builder": "^22.6.0",
     "electron-packager": "^14.2.1",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.0.0",
     "tslint": "^6.1.1",
     "typescript": "^3.8.3"
   },
