@@ -3,3 +3,5 @@ dist
 build/
 .idea/
 js/
+tests/integrational/data/like/
+tests/integrational/data/dislike/

@@ -8,9 +8,9 @@ export type FilePath = string;
 
 export class FileSystem {
 
-    async movePromise(source: FilePath, newPath: string): Promise<void> {
+    async movePromise(source: FilePath, newPath: string, copy = false): Promise<void> {
         this.createDirectorySync(path.dirname(newPath))
-        await this.delayMove(source, newPath)
+        await this.delayMove(source, newPath, copy)
     }
 
     async withTmp(path: FilePath, update: (tmp: FilePath) => Promise<void>): Promise<void> {
@@ -33,8 +33,11 @@ export class FileSystem {
         fs.unlinkSync(source)
     }
 
-    private async delayMove(src: string, dist: string): Promise<void> {
+    private async delayMove(src: string, dist: string, copy = false): Promise<void> {
         await fs.promises.copyFile(src, dist)
+        if (copy) {
+            return
+        }
         await this.delayRemove(src)
     }
 

@@ -1,4 +1,4 @@
 import {WindowRenderer} from "./Electron/Renderer/WindowRenderer"
 
-WindowRenderer.run().then(() => {
-})
+// noinspection JSIgnoredPromiseFromCall
+WindowRenderer.run()

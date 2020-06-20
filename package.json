@@ -12,7 +12,7 @@
     "pack": "yarn run build && electron-builder --dir",
     "dist": "yarn run build && electron-builder",
     "publish-win": "yarn run build && electron-builder build --win --publish onTagOrDraft",
-    "test": "yarn jest"
+    "test": "yarn build && yarn jest"
   },
   "main": "./js/Infrastructure/main_app.js",
   "repository": {
@@ -41,7 +41,10 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@types/rimraf": "^3.0.0",
     "electron-updater": "^4.3.1",
-    "sharp": "^0.25.2"
+    "rimraf": "^3.0.2",
+    "sharp": "^0.25.2",
+    "yargs": "^15.3.1"
   }
 }

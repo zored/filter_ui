@@ -1,4 +1,5 @@
 import {ISubjectActions} from "../../../../Domain/ISubjectActions"
+import {Source} from "../../../../Domain/Source"
 import {Paths} from "../../../File/FileSystem/Paths"
 import {ElementFactory} from "../../../File/Markup/ElementFactory"
 import {TitledFactory} from "../../../File/Markup/TitledFactory"
@@ -18,10 +19,10 @@ export class SubjectActions implements ISubjectActions {
     private readonly elementFactory: ElementFactory = new TitledFactory()
     private readonly paths = new Paths()
     private readonly directoryPrompt = new DirectoryPrompt()
-    private readonly main = new MainClient()
+    private readonly main = new MainClient(this.source)
     private first = true
 
-    constructor(private readonly output: Output) {
+    constructor(private readonly output: Output, private source: Source) {
     }
 
     async load(): Async {
@@ -94,9 +95,16 @@ export class SubjectActions implements ISubjectActions {
     }
 
     private async createTimeline(): Promise<Timeline> {
-        const directories = await this.directoryPrompt.getDirectories()
+        const directories = await this.getDirectories()
         const files = await this.main.getFiles(directories)
         return this.timelineFactory.createFromFiles(files)
+    }
+
+    private getDirectories = async () => {
+        const fromSource = this.source.directory
+        return fromSource !== ""
+            ? [fromSource]
+            : await this.directoryPrompt.getDirectories()
     }
 
     private async setLike(like: boolean): Async {
