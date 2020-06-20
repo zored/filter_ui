@@ -12,7 +12,7 @@ export class FileLiker {
 
     async like(message: LikeMessage): Promise<LikeResult> {
         try {
-            await this.fs.movePromise(message.fileFrom, message.fileTo)
+            await this.fs.movePromise(message.fileFrom, message.fileTo, message.copy)
             for (const command of message.commands) {
                 switch (command.id) {
                     case CommandId.rotate90:

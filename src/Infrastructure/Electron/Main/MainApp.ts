@@ -1,4 +1,6 @@
 import {App, app, BrowserWindow} from "electron"
+import {argv} from "yargs"
+import {Source} from "../../../Domain/Source"
 import {MainHandler} from "./Message/MainHandler"
 import {MainSender} from "./Message/MainSender"
 import {Updater} from "./Updater"
@@ -11,13 +13,23 @@ export class MainApp {
     private readonly handler = new MainHandler(this.sender, this.updater)
 
     private constructor(
-        private app: App,
-        private windowFactory: WindowFactory
+        private readonly app: App,
+        private readonly windowFactory: WindowFactory,
+        private readonly source: Source,
     ) {
     }
 
     static start(): void {
-        new MainApp(app, new WindowFactory(process.env.DEBUG === 'Y')).run()
+        const source: Source = {
+            directory: (argv.dir || '') as string,
+            copy: !!argv.copy,
+        }
+
+        new MainApp(
+            app,
+            new WindowFactory(process.env.DEBUG === 'Y' || (argv.debug as boolean)),
+            source
+        ).run()
     }
 
     private static isMacOs(): boolean {
@@ -43,7 +55,7 @@ export class MainApp {
         if (this.window) {
             return
         }
-        this.window = await this.windowFactory.create()
+        this.window = await this.windowFactory.create(this.source)
         this.sender.window = this.window
         this.window.on("closed", (): void => this.window = null)
         this.updater.initWindow(this.window)

@@ -1,3 +1,4 @@
+import {Source} from "../../../../Domain/Source"
 import {FileStack} from "../../../File/Retriever/FileRetriever"
 import {PreviousItem} from "../../../File/Timeline/PreviousItem"
 import {TimelineItem} from "../../../File/Timeline/TimelineItem"
@@ -22,6 +23,9 @@ export class MainClient {
     private readonly handler = new RendererHandler(this.progress, this.sender)
     private readonly exchanger = new RendererExchanger(this.sender, this.handler)
 
+    constructor(private source: Source) {
+    }
+
     subscribe(output: Output): void {
         this.handler.setOutput(output)
         this.handler.subscribe()
@@ -29,7 +33,7 @@ export class MainClient {
 
     like(like: boolean, item: TimelineItem, newPath: string): Promise<any> {
         return this.exchange<LikeDoneMessage>(
-            new LikeMessage(like, item.file.path, newPath, item.getResultCommands()),
+            new LikeMessage(like, item.file.path, newPath, item.getResultCommands(), this.source.copy),
             MainChannel.likeDone
         )
     }

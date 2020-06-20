@@ -12,6 +12,7 @@ export class LikeMessage implements IRendererMessage {
         public fileFrom: FilePath,
         public fileTo: FilePath,
         public commands: IItemCommand[],
+        public copy: boolean
     ) {
     }
 }
