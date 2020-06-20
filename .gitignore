@@ -5,3 +5,4 @@ build/
 js/
 tests/integrational/data/like/*
 tests/integrational/data/dislike/*
+tests/integrational/data/*_ignore.*

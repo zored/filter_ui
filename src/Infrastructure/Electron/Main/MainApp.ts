@@ -1,4 +1,4 @@
-import {App, app, BrowserWindow} from "electron"
+import {App, app, BrowserWindow, crashReporter} from "electron"
 import {argv} from "yargs"
 import {Source} from "../../../Domain/Source"
 import {MainHandler} from "./Message/MainHandler"
@@ -39,6 +39,13 @@ export class MainApp {
     run(): void {
         const {app} = this
         app.allowRendererProcessReuse = true
+        crashReporter.start({
+            productName: 'Filter UI',
+            companyName: 'zored',
+            submitURL: 'http://localhost:3333/index.php',
+            uploadToServer: true,
+        })
+
         app.on("ready", () => this.createWindow())
         app.on("activate", () => this.createWindow())
         app.on("window-all-closed", () => this.closeNonMacOs())

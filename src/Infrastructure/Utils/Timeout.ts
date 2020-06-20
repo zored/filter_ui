@@ -4,4 +4,19 @@ export class Timeout {
             resolve => setTimeout(resolve, ms)
         )
     }
+
+    static async wait(f: () => Promise<boolean>, timeoutMs: number = 10000, intervalMs: number = 500) {
+        const t = () => new Date().getTime()
+        const start = t()
+
+        while (true) {
+            if (t() - start > timeoutMs) {
+                return false
+            }
+            if (await f()) {
+                return true
+            }
+            await Timeout.promise(intervalMs)
+        }
+    }
 }

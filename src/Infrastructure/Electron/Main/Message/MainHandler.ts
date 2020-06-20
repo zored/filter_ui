@@ -21,24 +21,22 @@ import {IMainSender} from "./IMainSender"
 export class MainHandler implements IMainHandler {
     private readonly progress = new Progress("main subject actions")
     private readonly fs = new FileSystem()
-    private handlers: Record<RendererChannel, (message: IRendererMessage) => any> = {
+    private readonly handlers: Record<RendererChannel, (message: IRendererMessage) => any> = {
         [RendererChannel.like]: this.like,
         [RendererChannel.undo]: this.undo,
         [RendererChannel.update]: this.restartAndUpdate,
         [RendererChannel.getFiles]: this.getFiles,
     }
-    private waiters: Record<MainMessageId, (message: IRendererMessage) => void> = {}
-    private worker = new WorkerForRenderer(this.sender)
+    private readonly waiters: Record<MainMessageId, (message: IRendererMessage) => void> = {}
+    private readonly worker = new WorkerForRenderer(this.sender)
 
     constructor(
         private readonly sender: IMainSender,
-        private updater: Updater,
+        private readonly updater: Updater,
     ) {
     }
 
-    async done(): Promise<void> {
-        await this.progress.done()
-    }
+    done = () => this.progress.done()
 
     waitResponse(channel: RendererChannel, inResponseTo: MainMessageId): Promise<IRendererMessage> {
         return new Promise<IRendererMessage>(resolve => this.waiters[inResponseTo] = resolve)

@@ -7,10 +7,22 @@ const removeTimeout = 500
 export type FilePath = string;
 
 export class FileSystem {
-
     async movePromise(source: FilePath, newPath: string, copy = false): Promise<void> {
         this.createDirectorySync(path.dirname(newPath))
         await this.delayMove(source, newPath, copy)
+    }
+
+    async waitFile(path: FilePath, timeoutMs = 10000, checkIntervalMs = 500): Promise<boolean> {
+        const start = new Date().getTime()
+        while (true) {
+            if (new Date().getTime() - start > timeoutMs) {
+                return false
+            }
+            if (fs.existsSync(path)) {
+                return true
+            }
+            await Timeout.promise(checkIntervalMs)
+        }
     }
 
     async withTmp(path: FilePath, update: (tmp: FilePath) => Promise<void>): Promise<void> {

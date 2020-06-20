@@ -1,5 +1,6 @@
 import {once} from "events"
 import {Worker} from "worker_threads"
+import {Promises} from "../../../Utils/Promises"
 import {IRendererMessage} from "../../Message/Message/IRendererMessage"
 import {InfoMessage} from "../../Message/Message/Main/InfoMessage"
 import {IMainSender} from "../Message/IMainSender"
@@ -7,10 +8,15 @@ import {Path} from "../Path"
 import {WorkerMessage} from "./WorkerMessage"
 
 export class WorkerForRenderer {
+    private lock = Promises.createLock(20)
+
     constructor(private sender: IMainSender) {
     }
 
-    async workOnMessage(message: IRendererMessage): Promise<any> {
+    workOnMessage = (message: IRendererMessage): Promise<any> =>
+        this.lock(() => this.doWorkOnMessage(message))
+
+    private async doWorkOnMessage(message: IRendererMessage): Promise<any> {
         const path = Path.getAbsolute('js/Infrastructure/worker_renderer.js')
         const worker = new Worker(path, {workerData: message})
         let result: any = null

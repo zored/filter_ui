@@ -12,5 +12,4 @@ export class NullFactory implements ElementFactory {
     suits(_: MyFile): boolean {
         return true
     }
-
 }
