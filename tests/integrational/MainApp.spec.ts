@@ -5,7 +5,10 @@ import {SpectronBuilder} from "../utils/SpectronBuilder"
 
 afterEach(async () => await SpectronBuilder.stopAll())
 
+const cssImage = '#item img'
+
 jest.setTimeout(60000)
+
 test('main app', async () => {
     const app = await SpectronBuilder.start()
     await app.client.waitUntilWindowLoaded()
@@ -15,15 +18,23 @@ test('main app', async () => {
     expect(await w.isVisible()).toBe(true)
     expect(await w.getTitle()).toBe('Filter UI')
 
-    app.client.keys('F') // - dislike image
-    await Timeout.promise(1000) // todo: wait something
-    app.client.keys('J') // - like image
-    await Timeout.promise(1000);
+    // dislike
+    const waitImage = async (needle: string) => expect(await app.client
+        .waitForVisible(cssImage)
+        .getAttribute(cssImage, 'src')
+    ).toContain(needle)
 
-    [
+    await waitImage('dislike.png')
+    app.client.keys('F')
+    await waitImage('like.jpg')
+    app.client.keys('J')
+    await app.client.waitForVisible('#done')
+    await Timeout.promise(1000)
+    const expectedImages = [
         "like/like.jpg",
         "dislike/dislike.png",
-    ].forEach(p => expect(
+    ]
+    expectedImages.forEach(p => expect(
         fs.existsSync(path.join(SpectronBuilder.dataDir, ...p.split('/')))
     ).toBe(true))
 })
