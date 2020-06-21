@@ -11,12 +11,13 @@ const cssImage = '#item img'
 
 jest.setTimeout(300000)
 
-test('main app', async () => {
+test.skip('main app benchmark', async () => {
     [
         "dislike",
         "like",
         "*_ignore.*"
     ].forEach(p => rimraf.sync(SpectronBuilder.dataPath(p)))
+
 
     const pad = (n: number) => '0'.repeat(n < 100 ? (n < 10 ? 2 : 1) : 0) + n
     const like = (n: number, v: boolean) => v
@@ -48,6 +49,14 @@ test('main app', async () => {
     const app = await SpectronBuilder.start()
     await app.client.waitUntilWindowLoaded()
     expect(app.isRunning()).toBe(true)
+
+    // setInterval(async () => {
+    //     const logs = [
+    //         ...await app.client.getMainProcessLogs(),
+    //         ...await app.client.getRenderProcessLogs(),
+    //     ];
+    //     fs.writeFileSync("all.logs", logs.join('\n'));
+    // }, 10000);
 
     const w = app.browserWindow
     expect(await w.isVisible()).toBe(true)

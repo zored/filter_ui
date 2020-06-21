@@ -39,18 +39,21 @@ export class MainApp {
     run(): void {
         const {app} = this
         app.allowRendererProcessReuse = true
+        this.startCrashReporter()
+        app.on("ready", () => this.createWindow())
+        app.on("activate", () => this.createWindow())
+        app.on("window-all-closed", () => this.closeNonMacOs())
+        app.on("before-quit", event => this.quitAfterHandler(event))
+        this.handler.subscribe()
+    }
+
+    private startCrashReporter() {
         crashReporter.start({
             productName: 'Filter UI',
             companyName: 'zored',
             submitURL: 'http://localhost:3333/index.php',
             uploadToServer: true,
         })
-
-        app.on("ready", () => this.createWindow())
-        app.on("activate", () => this.createWindow())
-        app.on("window-all-closed", () => this.closeNonMacOs())
-        app.on("before-quit", event => this.quitAfterHandler(event))
-        this.handler.subscribe()
     }
 
     private quitAfterHandler(event: Electron.Event): void {

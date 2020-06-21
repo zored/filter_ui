@@ -1,24 +1,30 @@
-import {parentPort, workerData} from "worker_threads"
+import {parentPort} from "worker_threads"
 import {FileLiker} from "../../../File/Like/FileLiker"
 import {FileRetriever} from "../../../File/Retriever/FileRetriever"
 import {RendererChannel} from "../../Message/Channel/RendererChannel"
 import {IRendererMessage} from "../../Message/Message/IRendererMessage"
 import {GetFilesMessage} from "../../Message/Message/Renderer/GetFilesMessage"
 import {LikeMessage} from "../../Message/Message/Renderer/LikeMessage"
-import {WorkerMessage} from "./WorkerMessage"
+import {WorkerRequest} from "./WorkerRequest"
+import {WorkerResponse} from "./WorkerResponse"
 
 export class WorkerApp {
-    private fileRetriever = new FileRetriever(false, info => this.sendInfo(info))
     private liker = new FileLiker()
 
-    async run(): Promise<void> {
-        const data = await this.getData(workerData)
-        parentPort.postMessage(new WorkerMessage(data, true))
-    }
+    subscribe = () =>
+        parentPort.addListener("message", async ({id, message}: WorkerRequest) =>
+            parentPort.postMessage(
+                new WorkerResponse(
+                    id,
+                    await this.getData(message)
+                )
+            )
+        )
 
-    private sendInfo(info: string): void {
-        parentPort.postMessage(new WorkerMessage(null, false, info))
-    }
+    private sendInfo = (info: string): void =>
+        parentPort.postMessage(new WorkerResponse(0, null, info))
+
+    private fileRetriever = new FileRetriever(false, info => this.sendInfo(info))
 
     private async getData(message: IRendererMessage) {
         switch (message.channel) {

@@ -1,5 +1,9 @@
 import {Timeout} from "./Timeout"
 
+export type RequestId = number;
+
+export type RequestEvent<Event> = (doRequest: (id: RequestId) => void) => Promise<Event>
+
 export class Promises {
     static map = <A, T>(a: Array<A>, f: (a: A, i: number) => Promise<T>): Promise<T[]> => {
         const acc: T[] = []
@@ -28,5 +32,27 @@ export class Promises {
                 busy--
             }
         }
+    }
+
+    static forEvents = <Event>(getId: (e: Event) => RequestId) => {
+        const resolves: Record<RequestId, (e: Event) => void> = {}
+        const listener = (e: Event) => {
+            const id = getId(e)
+            const resolve = resolves[id]
+            if (!resolve) {
+                return
+            }
+            resolve(e)
+        }
+
+        let nextId = 1
+        const request: RequestEvent<Event> = (doRequest: (id: RequestId) => void) =>
+            new Promise<Event>(resolve => {
+                const id = nextId++
+                resolves[id] = resolve
+                doRequest(id)
+            })
+
+        return {listener, request}
     }
 }

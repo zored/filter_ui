@@ -1,3 +1,3 @@
 import {WorkerApp} from "./Electron/Main/Worker/WorkerApp"
 
-new WorkerApp().run()
+new WorkerApp().subscribe()
