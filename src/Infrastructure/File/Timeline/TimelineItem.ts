@@ -11,15 +11,11 @@ export class TimelineItem {
     constructor(public file: MyFile, public priority: Priority) {
     }
 
-    getResultCommands(): Commands {
-        console.log(this.commands)
-        const result = this.commands.reduce(
+    getResultCommands = (): Commands =>
+        this.commands.reduce(
             (cs, c) => cs.concat(this.mergeRotates(cs.pop(), c)),
             [] as Commands
         )
-        console.log(result)
-        return result
-    }
 
     createAfterLike(): TimelineItem {
         return new TimelineItem(this.file, this.priority)

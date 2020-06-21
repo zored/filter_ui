@@ -28,9 +28,11 @@ export class Output {
     }
 
     setContent(element?: MyElement) {
+        debugger
         if (this.element) {
             this.element.onHide()
         }
+        this.element = element
         this.content.innerHTML = ''
         if (element === null) {
             return

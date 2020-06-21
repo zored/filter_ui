@@ -1,7 +1,7 @@
 import {MyFile} from "../MyFile"
+import {MyElement} from "./Element/MyElement"
 import {ElementFactory} from "./ElementFactory"
 import {FindSuitableFactory} from "./FindSuitableFactory"
-import {MyElement} from "./Element/MyElement"
 
 export class TitledFactory implements ElementFactory {
     constructor(private factory: ElementFactory = new FindSuitableFactory()) {
@@ -12,8 +12,7 @@ export class TitledFactory implements ElementFactory {
         const htmlElement = document.createElement('div')
             .appendChild(this.createHeader(file))
             .appendChild(child.html)
-
-        return new MyElement(htmlElement, child.rotate)
+        return child.withHtml(htmlElement)
     }
 
     suits(_: MyFile): boolean {

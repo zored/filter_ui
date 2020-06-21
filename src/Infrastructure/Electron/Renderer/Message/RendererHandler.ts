@@ -72,7 +72,6 @@ export class RendererHandler implements IRendererHandler {
         this.sender.send(new RestartAndUpdateMessage())
     }
 
-    private info(message: string): void {
+    private info = (message: string): void =>
         console.log(message)
-    }
 }

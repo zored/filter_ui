@@ -1,6 +1,7 @@
 import {MyFile} from "../MyFile"
-import {ElementFactory} from "./ElementFactory"
 import {MyElement} from "./Element/MyElement"
+import {VideoElement} from "./Element/VideoElement"
+import {ElementFactory} from "./ElementFactory"
 
 export class VideoFactory implements ElementFactory {
     createElement(file: MyFile): MyElement {
@@ -8,7 +9,7 @@ export class VideoFactory implements ElementFactory {
         video.autoplay = false
         video.loop = true
         video.appendChild(this.createSource(file.path))
-        return new MyElement(video)
+        return new VideoElement(video)
     }
 
     suits(file: MyFile): boolean {
