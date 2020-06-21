@@ -1,5 +1,5 @@
 import {MyFile} from "../MyFile"
-import {MyElement} from "./MyElement"
+import {MyElement} from "./Element/MyElement"
 
 export interface ElementFactory {
     suits(file: MyFile): boolean

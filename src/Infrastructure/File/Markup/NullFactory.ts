@@ -1,6 +1,6 @@
 import {MyFile} from "../MyFile"
 import {ElementFactory} from "./ElementFactory"
-import {MyElement} from "./MyElement"
+import {MyElement} from "./Element/MyElement"
 
 export class NullFactory implements ElementFactory {
     createElement(file: MyFile): MyElement {

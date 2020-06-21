@@ -1,7 +1,7 @@
 import {MyFile} from "../MyFile"
 import {ElementFactory} from "./ElementFactory"
 import {FindSuitableFactory} from "./FindSuitableFactory"
-import {MyElement} from "./MyElement"
+import {MyElement} from "./Element/MyElement"
 
 export class TitledFactory implements ElementFactory {
     constructor(private factory: ElementFactory = new FindSuitableFactory()) {

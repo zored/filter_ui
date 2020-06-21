@@ -1,11 +1,11 @@
 import {MyFile} from "../MyFile"
 import {ElementFactory} from "./ElementFactory"
-import {MyElement} from "./MyElement"
+import {MyElement} from "./Element/MyElement"
 
 export class VideoFactory implements ElementFactory {
     createElement(file: MyFile): MyElement {
         const video = document.createElement('video')
-        video.autoplay = true
+        video.autoplay = false
         video.loop = true
         video.appendChild(this.createSource(file.path))
         return new MyElement(video)

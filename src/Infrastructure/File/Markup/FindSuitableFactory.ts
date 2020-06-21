@@ -1,7 +1,7 @@
 import {MyFile} from "../MyFile"
 import {ElementFactory} from "./ElementFactory"
 import {ImageFactory} from "./ImageFactory"
-import {MyElement} from "./MyElement"
+import {MyElement} from "./Element/MyElement"
 import {NullFactory} from "./NullFactory"
 import {VideoFactory} from "./VideoFactory"
 

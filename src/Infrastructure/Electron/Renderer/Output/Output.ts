@@ -1,4 +1,4 @@
-import {AddRotate, MyElement} from "../../../File/Markup/MyElement"
+import {AddRotate, MyElement} from "../../../File/Markup/Element/MyElement"
 
 type BodyClass = 'like' | 'dislike' | ''
 
@@ -11,6 +11,7 @@ export class Output {
     private readonly loading = document.getElementById("loading")
     private videoSpeed = 1.2
     private videoSpeedDelta = 0.15
+    private element?: MyElement
 
     activateContent(enabled: boolean = true) {
         this.setVisible(this.content, enabled)
@@ -27,10 +28,14 @@ export class Output {
     }
 
     setContent(element?: MyElement) {
+        if (this.element) {
+            this.element.onHide()
+        }
         this.content.innerHTML = ''
         if (element === null) {
             return
         }
+        element.onShow()
         this.content.appendChild(element.html)
         this.doRotate = element.rotate
         this.updateVideoSpeed()

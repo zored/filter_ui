@@ -11,7 +11,10 @@ const cssImage = '#item img'
 
 jest.setTimeout(300000)
 
-test.skip('main app benchmark', async () => {
+test('main app benchmark', async () => {
+    if (process.env.ENV !== 'dev') {
+        return;
+    }
     [
         "dislike",
         "like",
@@ -25,7 +28,7 @@ test.skip('main app benchmark', async () => {
         : `2020-12-31 ${pad(n)} dislike${n > 1 ? '_ignore' : ''}.png`
     const expectedImages: string[] = []
 
-    const total = 1000
+    const total = 200
     const copies = []
     for (let i = 0; i < total; i++) {
         const isLike = i % 2 === 0
@@ -77,7 +80,6 @@ test.skip('main app benchmark', async () => {
 
     await Promises.map(expectedImages, async s => {
         await waitImage(Arrays.last(s.split('/')))
-        await Timeout.promise(50)
         app.client.keys(s.indexOf('dislike') >= 0 ? 'F' : 'J')
     })
 

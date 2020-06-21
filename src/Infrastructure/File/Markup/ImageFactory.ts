@@ -1,6 +1,6 @@
 import {MyFile} from "../MyFile"
 import {ElementFactory} from "./ElementFactory"
-import {AddRotate, MyElement} from "./MyElement"
+import {AddRotate, MyElement} from "./Element/MyElement"
 
 export class ImageFactory implements ElementFactory {
     createElement(file: MyFile): MyElement {
