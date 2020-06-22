@@ -1,8 +1,11 @@
 import {Timeout} from "./Timeout"
 
+type Listener = (count: number) => void
+
 export class Progress {
     private count: number = 0
     private waiting: boolean = false
+    private listeners: Listener[] = []
 
     constructor(private name: string) {
     }
@@ -47,11 +50,14 @@ export class Progress {
         return null
     }
 
+    addListener = (listener: Listener) => this.listeners.push(listener)
+
     private add(delta: number): boolean {
         if (this.waiting && delta > 0) {
             return false
         }
         this.count += delta
+        this.listeners.forEach(l => l(this.count))
         console.log(`progress "${this.name}" +(${delta}) = ${this.count}`)
         return true
     }

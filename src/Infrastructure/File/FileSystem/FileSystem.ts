@@ -2,7 +2,7 @@ import * as fs from "fs"
 import * as path from "path"
 import {Timeout} from "../../Utils/Timeout"
 
-const removeTimeout = 500
+const removeTimeout = 1000
 
 export type FilePath = string;
 
@@ -66,9 +66,10 @@ export class FileSystem {
             if (err === null) {
                 return
             }
-            if (err.code != "EBUSY" || retry > 5) {
+            if (err.code != "EBUSY" || retry > 10) {
                 throw err
             }
+            console.log(`delaying remove of '${file}' (retry ${retry})...`)
             await this.delayRemove(file, retry + 1)
         }
     }

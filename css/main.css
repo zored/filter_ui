@@ -9,6 +9,49 @@
     margin: auto;
 }
 
+[data-hash] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#all {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    opacity: 0.1;
+    background-color: #000;
+}
+
+#all:hover {
+    opacity: 1;
+    box-shadow: 0 0 3px #000;
+}
+
+#all > * {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    height: 10px;
+    float: left;
+}
+
+#progress {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    background-color: #000;
+    color: #fff;
+    opacity: 0.3;
+    font-size: 70%;
+}
+
 html, body {
     width: 100%;
     height: 100%;
@@ -29,11 +72,11 @@ body {
     padding: 4px;
 }
 
-body.like {
+body.like, #all_likes {
     background-color: #093b09;
 }
 
-body.dislike {
+body.dislike, #all_dislikes {
     background-color: #470d19;
 }
 

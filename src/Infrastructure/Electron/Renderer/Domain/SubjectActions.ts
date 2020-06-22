@@ -1,7 +1,7 @@
 import {ISubjectActions} from "../../../../Domain/ISubjectActions"
 import {Source} from "../../../../Domain/Source"
 import {Paths} from "../../../File/FileSystem/Paths"
-import {ElementFactory} from "../../../File/Markup/ElementFactory"
+import {CacheFactory} from "../../../File/Markup/CacheFactory"
 import {TitledFactory} from "../../../File/Markup/TitledFactory"
 import {MyFile} from "../../../File/MyFile"
 import {RotateCommand} from "../../../File/Timeline/Command/RotateCommand"
@@ -9,20 +9,27 @@ import {Timeline} from "../../../File/Timeline/Timeline"
 import {TimelineFactory} from "../../../File/Timeline/TimelineFactory"
 import {DirectoryPrompt} from "../Input/DirectoryPrompt"
 import {MainClient} from "../Like/MainClient"
-import {Output} from "../Output/Output"
+import {AllProgress, Output} from "../Output/Output"
 
 type Async = Promise<void>
 
 export class SubjectActions implements ISubjectActions {
     private timeline: Timeline
     private readonly timelineFactory = new TimelineFactory()
-    private readonly elementFactory: ElementFactory = new TitledFactory()
+    private readonly elementFactory = new CacheFactory(new TitledFactory())
     private readonly paths = new Paths()
     private readonly directoryPrompt = new DirectoryPrompt()
     private readonly main = new MainClient(this.source)
     private first = true
+    private totalProgress: AllProgress = {
+        dislikes: 0,
+        likes: 0,
+        remaining: 0,
+    }
 
     constructor(private readonly output: Output, private source: Source) {
+        output.beforeDispose = e => this.elementFactory.dispose(e)
+        this.main.progress.addListener(v => this.output.setProcessingProgress(v))
     }
 
     async load(): Async {
@@ -71,10 +78,12 @@ export class SubjectActions implements ISubjectActions {
         if (done) {
             return
         }
-        const element = this.elementFactory.createElement(file)
 
-        this.timeline.getUpcomingFiles(10).forEach(file => this.elementFactory.createElement(file))
-        this.output.setContent(element)
+        const current = this.elementFactory.createElement(file)
+        const upcoming = this.timeline
+            .getUpcomingFiles(10)
+            .map(f => this.elementFactory.createElement(f))
+        this.output.setContent(current, upcoming)
     }
 
     async done(): Async {
@@ -97,6 +106,7 @@ export class SubjectActions implements ISubjectActions {
     private async createTimeline(): Promise<Timeline> {
         const directories = await this.getDirectories()
         const files = await this.main.getFiles(directories)
+        this.totalProgress.remaining = files.length
         return this.timelineFactory.createFromFiles(files)
     }
 
@@ -114,9 +124,14 @@ export class SubjectActions implements ISubjectActions {
         }
         const directoryName = like ? 'like' : 'dislike'
         const newPath = this.paths.getMoveToNeighbourDirectoryPath(item.file.path, directoryName)
-        this.main.like(like, item, newPath).then(() => {
-        })
+        // noinspection ES6MissingAwait
+        this.main.like(like, item, newPath)
         this.output.like(like)
+
+        this.totalProgress.remaining--
+        this.totalProgress[like ? 'likes' : 'dislikes']++
+        this.output.setTotalProgress(this.totalProgress)
+
         this.timeline.toHistory(newPath)
         this.refresh()
     }

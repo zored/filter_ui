@@ -1,15 +1,15 @@
 import {MyElement} from "./MyElement"
 
 export class VideoElement extends MyElement {
-    constructor(private e: HTMLVideoElement) {
-        super(e);
-    }
     onShow() {
         super.onShow()
         // noinspection JSIgnoredPromiseFromCall
-        this.e.play()
+        this.video().play()
     }
+
     onHide() {
-        this.e.pause()
+        this.video().pause()
     }
+
+    private video = () => this.html as HTMLVideoElement
 }
