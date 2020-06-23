@@ -7,7 +7,7 @@ export class ImageFactory implements ElementFactory {
         const img = document.createElement('img')
         img.src = `${file.path}#${new Date().getTime()}`
 
-        return new MyElement(img, this.getRotate(img))
+        return new MyElement(img, (e) => this.getRotate(e as HTMLImageElement))
     }
 
     suits(file: MyFile): boolean {

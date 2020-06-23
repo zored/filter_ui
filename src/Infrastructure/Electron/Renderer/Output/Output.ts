@@ -86,7 +86,7 @@ export class Output {
             current.html = existingHtml
         }
         this.setOpaque(current.html, false)
-        this.doRotate = current.rotate
+        this.doRotate = current.rotate(current.html)
         this.updateVideoSpeed()
         current.onShow()
     }
