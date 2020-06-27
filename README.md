@@ -9,7 +9,7 @@ UI to Filter anything.
 - To organize your video library.
 
 ## How?
-[![Filter UI YouTube video](image/demo.gif)](https://www.youtube.com/watch?v=qI6WYI8sgH8)
+[![Filter UI YouTube video](image/demo.gif)](https://youtu.be/v1aQ_R6u5EY)
 
 Keys:
 - `O` - open directory.
