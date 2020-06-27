@@ -13,12 +13,9 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with: {node-version: 14.4.0}
-      - run: yarn install
-      - run: yarn build
-      - run: yarn test
+      - run: yarn before-publish
       - uses: samuelmeuli/action-electron-builder@v1
         with:
           args: -c.snap.publish=github
-          skip_build: true
           github_token: ${{ secrets.github_token }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
