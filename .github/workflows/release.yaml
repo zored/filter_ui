@@ -16,10 +16,9 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn test
-      - name: 'Ubuntu: install required package'
-        uses: samuelmeuli/action-snapcraft@v1
-        if: matrix.os == 'ubuntu-latest'
       - uses: samuelmeuli/action-electron-builder@v1
         with:
+          args: -c.snap.publish=github
+          skip_build: true
           github_token: ${{ secrets.github_token }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
