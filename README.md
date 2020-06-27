@@ -2,7 +2,7 @@
 UI to Filter anything.
 
 ## What?
-[![Filter UI YouTube video](https://www.youtube.com/watch?v=qI6WYI8sgH8)](https://www.youtube.com/watch?v=qI6WYI8sgH8)
+[![Filter UI YouTube video](https://www.youtube.com/watch?v=qI6WYI8sgH8)](https://j.gifs.com/p8plKV.gif)
 
 ## Why?
 - To remove garbage photos.
