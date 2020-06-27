@@ -1,6 +1,9 @@
 # Filter UI
 UI to Filter anything.
 
+## What?
+[![Filter UI YouTube video](https://www.youtube.com/watch?v=qI6WYI8sgH8)](https://www.youtube.com/watch?v=qI6WYI8sgH8)
+
 ## Why?
 - To remove garbage photos.
 - To organize your video library.
@@ -13,9 +16,10 @@ Just open directory with your media-files and start filtering:
 - `L` - undo last (dis)like.
 
 ## Download
-You can [download Filter UI here](https://github.com/zored/filter_ui/releases/latest):
-- MacOS (`?`)
-- Windows (`filter_ui-Setup-X.X.X.exe`)
+You can [download app here](https://github.com/zored/filter_ui/releases/latest):
+- MacOS: `*.dmg`.
+- Linux: `*_amd64.snap`.
+- Windows: `*-Setup-0.2.9.exe`.
 
 ## Dev
 Dev info is [here](./DEV.md).
