@@ -1,5 +1,6 @@
 # Filter UI
 ![release](https://github.com/zored/filter_ui/workflows/release/badge.svg?branch=master)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/zored/filter_ui)
 
 UI to Filter anything.
 
@@ -8,7 +9,6 @@ UI to Filter anything.
 - To organize your video library.
 
 ## How?
-YouTube video:
 [![Filter UI YouTube video](image/demo.gif)](https://www.youtube.com/watch?v=qI6WYI8sgH8)
 
 Keys:
