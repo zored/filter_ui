@@ -1,25 +1,28 @@
 # Filter UI
-UI to Filter anything.
+![release](https://github.com/zored/filter_ui/workflows/release/badge.svg?branch=master)
 
-## What?
-[![Filter UI YouTube video](image/demo.gif)](https://www.youtube.com/watch?v=qI6WYI8sgH8)
+UI to Filter anything.
 
 ## Why?
 - To remove garbage photos.
 - To organize your video library.
 
 ## How?
-Just open directory with your media-files and start filtering:
+YouTube video:
+[![Filter UI YouTube video](image/demo.gif)](https://www.youtube.com/watch?v=qI6WYI8sgH8)
+
+Keys:
+- `O` - open directory.
 - `J` / `F` - move file to `dislike` / `like` directory.
 - `Q` / `P` - rotate image.
 - `D` / `K` - change video speed.
 - `L` - undo last (dis)like.
 
-## Download
+## I want it!
 You can [download app here](https://github.com/zored/filter_ui/releases/latest):
 - MacOS: `*.dmg`.
 - Linux: `*_amd64.snap`.
 - Windows: `*-Setup-0.2.9.exe`.
 
-## Dev
+## For developers
 Dev info is [here](./DEV.md).
