@@ -5,7 +5,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os:
+        - macos-latest
+        - ubuntu-latest
+        - windows-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
@@ -13,6 +16,9 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn test
+      - name: 'Ubuntu: install required package'
+        uses: samuelmeuli/action-snapcraft@v1
+        if: matrix.os == 'ubuntu-latest'
       - uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
