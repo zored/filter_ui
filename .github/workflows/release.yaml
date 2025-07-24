@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
-        with: {node-version: 14.4.0}
+        with: {node-version: 22.16.0}
       - name: Build and test
         run: yarn before-publish
       - uses: samuelmeuli/action-electron-builder@v1

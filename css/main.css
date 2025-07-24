@@ -104,3 +104,7 @@ body.dislike, #all_dislikes {
     display: none;
     background-color: #333;
 }
+video {
+    filter: none;
+    mix-blend-mode: normal;
+}

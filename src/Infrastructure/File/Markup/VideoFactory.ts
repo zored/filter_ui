@@ -8,6 +8,15 @@ export class VideoFactory implements ElementFactory {
         const video = document.createElement('video')
         video.autoplay = false
         video.loop = true
+        video.controls = true
+        video.muted = false
+        video.preload = 'auto'
+        video.classList.add('video-player')
+        video.style.display = 'block'
+        video.style.width = '100%'
+        video.style.height = '100%'
+        video.style.objectFit = 'contain'
+        video.style.filter = 'none'
         video.appendChild(this.createSource(file.path))
         return new VideoElement(video)
     }

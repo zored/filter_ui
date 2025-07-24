@@ -39,6 +39,11 @@ export class MainApp {
     run(): void {
         const {app} = this
         app.allowRendererProcessReuse = true
+
+        app.disableHardwareAcceleration();
+        app.commandLine.appendSwitch('disable-direct-composition');
+        app.commandLine.appendSwitch('disable-gpu');
+
         this.startCrashReporter()
         app.on("ready", () => this.createWindow())
         app.on("activate", () => this.createWindow())
