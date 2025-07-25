@@ -40,7 +40,7 @@ export class FileRetriever implements IDirectoryFileRetriever {
         let isDirectory = stats.isDirectory()
         if (!isDirectory) {
             this.sendInfoOnFile()
-            return [new MyFile(path, MyStats.fromStats(stats))]
+            return [new MyFile(path, MyStats.fromStats(stats, path))]
         }
         if (this.recursive) {
             return this.getDirectoryFiles(path)

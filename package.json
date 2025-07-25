@@ -4,8 +4,10 @@
   "description": "UI to filter anything",
   "scripts": {
     "build": "tsc",
+    "exe": "electron-builder",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "electron --inspect ./js/Infrastructure/main_app.js",
+    "build-n-start": "npm run build && npm run start",
     "postinstall": "electron-builder install-app-deps",
     "publish": "electron-builder build --publish onTagOrDraft",
     "before-publish": "yarn install && yarn build && yarn test",
