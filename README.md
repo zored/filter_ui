@@ -9,7 +9,8 @@ UI to Filter anything.
 - To organize your video library.
 
 ## How?
-[![Filter UI YouTube video](image/demo.gif)](https://youtu.be/v1aQ_R6u5EY)
+- [![Filter UI YouTube video](image/demo.gif)](https://youtu.be/v1aQ_R6u5EY)
+- [iPhone Preparations](./flow/README.md)
 
 Keys:
 - `O` - open directory.
