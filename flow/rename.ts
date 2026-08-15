@@ -2,6 +2,14 @@ import { walkSync } from "https://deno.land/std@0.106.0/fs/mod.ts";
 
 const renamesFile = "renames.json";
 let renames: [string, string][];
+const directory = Deno.args[1] ?? ".";
+
+try {
+  Deno.chdir(directory);
+} catch (error) {
+  console.error(`Cannot open directory ${JSON.stringify(directory)}: ${error.message}`);
+  Deno.exit(2);
+}
 
 function fillId(id: ImageId | null, d: Date | null, p: string): null | ImageId {
   if (!d) {
