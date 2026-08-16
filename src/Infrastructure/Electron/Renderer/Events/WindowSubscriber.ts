@@ -1,4 +1,3 @@
-import {remote} from "electron"
 import {ISubjectActions} from "../../../../Domain/ISubjectActions"
 
 export class WindowSubscriber {
@@ -15,6 +14,6 @@ export class WindowSubscriber {
 
     async delayClose() {
         await this.subject.done()
-        remote.getCurrentWindow().destroy()
+        window.filterUi.closeWindow()
     }
 }

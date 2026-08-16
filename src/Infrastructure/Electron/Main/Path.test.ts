@@ -1,8 +1,10 @@
 import {Path} from "./Path"
+import assert from "node:assert/strict"
+import test from "node:test"
 
 test('retrievers correct path', () => {
-    expect(Path.getAbsolute('package.json')).toBeDefined()
+    assert.ok(Path.getAbsolute('package.json'))
 })
 test('throws error on incorrect path', () => {
-    expect(() => Path.getAbsolute('no-file')).toThrow(Error)
+    assert.throws(() => Path.getAbsolute('no-file'), Error)
 })

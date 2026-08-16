@@ -14,7 +14,7 @@ export class WindowRenderer {
     }
 
     private static getSource(): Source {
-        const query = (global as any).location.search as string
+        const query = window.location.search
         const values = query
             .substring(1)
             .split('&')

@@ -1,5 +1,6 @@
-import {App, app, BrowserWindow, crashReporter} from "electron"
-import {argv} from "yargs"
+import {App, app, BrowserWindow, crashReporter, dialog, ipcMain} from "electron"
+import yargs from "yargs/yargs"
+import {hideBin} from "yargs/helpers"
 import {Source} from "../../../Domain/Source"
 import {MainHandler} from "./Message/MainHandler"
 import {MainSender} from "./Message/MainSender"
@@ -20,10 +21,12 @@ export class MainApp {
     }
 
     static start(): void {
-        const source: Source = {
-            directory: (argv.dir || '') as string,
-            copy: !!argv.copy,
-        }
+        const argv = yargs(hideBin(process.argv))
+            .option('dir', {type: 'string', default: ''})
+            .option('copy', {type: 'boolean', default: false})
+            .option('debug', {type: 'boolean', default: false})
+            .parseSync()
+        const source: Source = {directory: argv.dir, copy: argv.copy}
 
         new MainApp(
             app,
@@ -38,18 +41,17 @@ export class MainApp {
 
     run(): void {
         const {app} = this
-        app.allowRendererProcessReuse = true
-
-        app.disableHardwareAcceleration();
-        app.commandLine.appendSwitch('disable-direct-composition');
-        app.commandLine.appendSwitch('disable-gpu');
-
         this.startCrashReporter()
         app.on("ready", () => this.createWindow())
         app.on("activate", () => this.createWindow())
         app.on("window-all-closed", () => this.closeNonMacOs())
         app.on("before-quit", event => this.quitAfterHandler(event))
         this.handler.subscribe()
+        ipcMain.handle('filter-ui:choose-directories', event => dialog.showOpenDialog(
+            BrowserWindow.fromWebContents(event.sender)!,
+            {properties: ['openDirectory', 'multiSelections']}
+        ).then(result => result.filePaths))
+        ipcMain.on('filter-ui:close-window', event => BrowserWindow.fromWebContents(event.sender)?.destroy())
     }
 
     private startCrashReporter() {
@@ -62,7 +64,7 @@ export class MainApp {
     }
 
     private quitAfterHandler(event: Electron.Event): void {
-        event.returnValue = false
+        event.preventDefault()
         this.handler.done().finally(() => this.app.exit(0))
     }
 

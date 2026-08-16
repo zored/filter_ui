@@ -2,13 +2,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitAny": true,
+    "strict": false,
     "outDir": "js",
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "node_modules/*"
-      ]
-    },
+    "rootDir": "src",
     "target": "ES2020",
     "lib": [
       "es2019",

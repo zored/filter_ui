@@ -1,12 +1,10 @@
-import * as path from "path"
 import {FilePath} from "./FileSystem"
 
 export class Paths {
     getMoveToNeighbourDirectoryPath(file: FilePath, directoryName: string): FilePath {
-        return path.join(
-            path.dirname(file),
-            directoryName,
-            path.basename(file),
-        )
+        const separator = file.includes('\\') ? '\\' : '/'
+        const parts = file.split(/[\\/]/)
+        const name = parts.pop()
+        return [...parts, directoryName, name].join(separator)
     }
 }

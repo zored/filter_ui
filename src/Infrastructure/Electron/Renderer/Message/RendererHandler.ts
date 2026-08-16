@@ -1,4 +1,3 @@
-import {ipcRenderer} from 'electron'
 import {Progress} from "../../../Utils/Progress"
 import {Channels} from "../../Message/Channel/Channels"
 import {MainChannel} from "../../Message/Channel/MainChannel"
@@ -45,11 +44,7 @@ export class RendererHandler implements IRendererHandler {
     }
 
     subscribe(): void {
-        Channels.subscribe(
-            MainChannel,
-            ipcRenderer,
-            message => this.handle(message as IMainMessage)
-        )
+        window.filterUi.onMainMessage(message => this.handle(message))
     }
 
     waitResponse(channel: MainChannel, inResponseToId: RendererMessageId): Promise<IMainMessage> {

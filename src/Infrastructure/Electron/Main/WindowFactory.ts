@@ -10,9 +10,9 @@ export class WindowFactory {
     async create(source: Source): Promise<BrowserWindow> {
         const window = new BrowserWindow({
             webPreferences: {
-                nodeIntegration: true,
-                nodeIntegrationInWorker: true,
-                webSecurity: false,
+                contextIsolation: true,
+                nodeIntegration: false,
+                preload: Path.getAbsolute('js/Infrastructure/Electron/Preload.js'),
             },
         })
         window.maximize()

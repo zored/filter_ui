@@ -3,6 +3,7 @@
 <head>
     <title>Filter UI</title>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file:; media-src 'self' file:; style-src 'self'; script-src 'self'">
     <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
@@ -20,9 +21,6 @@
     <div id="all_dislikes" title="dislikes"></div>
     <div id="all_remaining" title="remaining"></div>
 </div>
-<script>
-    require("../js/Infrastructure/main_renderer.js")
-</script>
+<script src="../js/Infrastructure/main_renderer.js"></script>
 </body>
 </html>
-
